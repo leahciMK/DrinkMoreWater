@@ -2,10 +2,12 @@ package com.mj.drinkmorewater.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Date;
 
 
 /**
@@ -54,38 +56,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         close();
     }
 
-//    public void updateWater(long id, String name, String email, String phone, String state,
-//                              String city,String comment) {
-//        ContentValues editContact = new ContentValues();
-//        editContact.put("name", name);
-//        editContact.put("email", email);
-//        editContact.put("phone", phone);
-//        editContact.put("street", state);
-//        editContact.put("city", city);
-//        editContact.put("comment",comment);
-//
-//        open();
-//        database.update("contacts", editContact, "_id=" + id, null);
-//        close();
-//    }
-//    public Cursor getAllContactsSortedByName() {
-//        return database.query("contacts", new String[]{"_id", "name", "phone"}, null, null, null, null,
-//                "name");
-//    }
-//
-//    public Cursor getAllContacts() {
-//        return database.query("contacts", new String[]{"_id", "name", "phone"}, null, null, null, null,
-//                null);
-//    }
-//
-//    public Cursor getOneContact(long id) {
-//        return database.query("contacts", null, "_id=" + id, null, null, null, null);
-//    }
-//
-//    public void deleteContact(long id) {
-//        open();
-//        database.delete("contacts", "_id=" + id, null);
-//        close();
-//    }
+    public void updateWater(long id, Date date, int amount, String comment) {
+        ContentValues editWater = new ContentValues();
+        editWater.put("date", date.getTime());
+        editWater.put("amount", amount);
+        editWater.put("comment",comment);
+
+        open();
+        database.update("water", editWater, "_id=" + id, null);
+        close();
+    }
+    public Cursor getAllContactsSortedByDate() {
+        return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
+                "date");
+    }
+
+    public Cursor getAllWater() {
+        return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
+                null);
+    }
+
+    public Cursor getOneWater(long id) {
+        return database.query("water", null, "_id=" + id, null, null, null, null);
+    }
+
+    public void deleteWater(long id) {
+        open();
+        database.delete("water", "_id=" + id, null);
+        close();
+    }
 
 }

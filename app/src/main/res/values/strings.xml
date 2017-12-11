@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DrinkMoreWater</string>
+    <string name="insert_water">Insert Water</string>
 </resources>

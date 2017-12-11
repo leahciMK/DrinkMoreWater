@@ -1,8 +1,11 @@
 package com.mj.drinkmorewater.Activities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.R;
@@ -11,6 +14,8 @@ import com.mj.drinkmorewater.db.Water;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+
+    FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,5 +31,21 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, str, duration);
         toast.show();
 
+        floatingActionButton=(FloatingActionButton) findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent addNewWater=new Intent(MainActivity.this,InsertWater.class);
+                startActivity(addNewWater);
+            }
+        });
+
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

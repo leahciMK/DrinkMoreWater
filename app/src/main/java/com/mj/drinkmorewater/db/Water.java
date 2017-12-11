@@ -34,7 +34,7 @@ public class Water implements WaterEntry {
     public String getCurrentDateToString() {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date currentDate=new Date(System.currentTimeMillis());
-        
+
         return df.format(currentDate);
 
     }
