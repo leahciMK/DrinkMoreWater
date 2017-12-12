@@ -51,6 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         newEntry.put("amount", water.getAmount());
         newEntry.put("comment", water.getComment());
 
+
         open();
         database.insert("water", null, newEntry);
         close();
@@ -66,9 +67,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         database.update("water", editWater, "_id=" + id, null);
         close();
     }
-    public Cursor getAllContactsSortedByDate() {
+    public Cursor getAllWatersSortedByDate() {
         return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
                 "date");
+    }
+    public Cursor getWaterPerDay() {
+        Water a=new Water();
+        String str=a.getDateToString();
+        return database.query("water",new String[]{"amount"},"date like "+str,null,null,null,null);
     }
 
     public Cursor getAllWater() {

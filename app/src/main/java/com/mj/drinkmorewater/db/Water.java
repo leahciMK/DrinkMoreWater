@@ -18,10 +18,10 @@ public class Water implements WaterEntry {
         this.amount=0;
         this.comment=null;
     }
-    public Water(Date date, int amount, String comment) {
-        this.date=date;
+    public Water(int amount, String comment) {
         this.amount=amount;
         this.comment=comment;
+        this.date=getCurrentDate();
     }
 
     @Override
@@ -37,6 +37,14 @@ public class Water implements WaterEntry {
 
         return df.format(currentDate);
 
+    }
+
+    @Override
+    public String getDateToString() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date currentDate=new Date(System.currentTimeMillis());
+
+        return df.format(currentDate);
     }
 
     public Date getDate() {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/addWaterItem"
+        android:alphabeticShortcut="e"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/menuitem_add_water"
+        android:titleCondensed="@string/menuitem_add_water" />
+
+</menu>

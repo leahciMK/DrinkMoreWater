@@ -6,9 +6,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
 
 import java.util.Date;
@@ -17,10 +19,14 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton floatingActionButton;
 
+    TextView txtWaterPerDay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        txtWaterPerDay=(TextView) findViewById(R.id.txtDataWaterPerDay);
 
         Water water=new Water();
         Date current=water.getCurrentDate();
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(addNewWater);
             }
         });
+
+        DatabaseHandler databaseHandler=new DatabaseHandler(getApplicationContext());
+        //databaseHandler.getAllWater();
 
 
 

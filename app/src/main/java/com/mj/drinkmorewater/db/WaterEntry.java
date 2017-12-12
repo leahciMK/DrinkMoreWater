@@ -9,5 +9,6 @@ import java.util.Date;
 public interface WaterEntry {
     Date getCurrentDate();
     String getCurrentDateToString();
+    String getDateToString();
 
 }
