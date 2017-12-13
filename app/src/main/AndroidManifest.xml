@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.InsertWater" android:label="@string/insert_water"></activity>
+        <activity android:name=".Activities.InsertWater" android:label="@string/insert_water"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

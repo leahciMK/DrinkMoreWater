@@ -1,8 +1,12 @@
 package com.mj.drinkmorewater.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +39,16 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         btnInsert.setOnClickListener(saveWaterButtonClicked);
         seekBar.setOnSeekBarChangeListener(this);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
+        setSupportActionBar(myToolbar);
+        myToolbar.setNavigationIcon(R.drawable.ic_action_back);
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         seekBar.setMax(3000);
 
 
@@ -93,5 +107,30 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.btnBack:
+//                onBackPressed();
+//
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//
+//
+//        }
+//
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
+//        getMenuInflater().inflate(R.menu.menu_insert_water, menu);
+//        return true;
+//    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
