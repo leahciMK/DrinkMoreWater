@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -27,11 +29,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createQuery = "CREATE TABLE water ("
-                + "_id integer primary key autoincrement,"
-                + "date LONG, amount INTEGER, comment TEXT);";
+                + "_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,"
+                + "date TEXT NOT NULL, amount INTEGER NOT NULL, comment TEXT);";
         db.execSQL(createQuery);
     }
 
+    /*CREATE TABLE water (
+            _id     INTEGER PRIMARY KEY AUTOINCREMENT
+            UNIQUE
+            NOT NULL,
+            date    LONG    NOT NULL,
+            amount  INTEGER NOT NULL,
+            comment TEXT
+    ); */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
@@ -47,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void insertWater(Water water) {
         ContentValues newEntry = new ContentValues();
-        newEntry.put("date", water.getDate().getTime());
+        newEntry.put("date", water.getDate());
         newEntry.put("amount", water.getAmount());
         newEntry.put("comment", water.getComment());
 
@@ -90,6 +100,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         open();
         database.delete("water", "_id=" + id, null);
         close();
+    }
+
+    public Cursor getSumWaterToday() {
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String dateToString=dateFormat.format(date);
+//        String countQuery = "SELECT  sum(amount) as 'amount' FROM water WHERE strftime('%Y-%m-%d',date/1000,'unixepoch') = '" + dateToString+'"';
+
+        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= "+dateToString;
+
+
+        //return database.query("water",new String[] {"sum(amount)"},"amount >= "+dateToString,null,null,null,null);
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery(countQuery, null);
+//        cursor.close();
+
+        // return count
+        //return cursor;
+        //where strftime('%Y-%m-%d %H:%M:%S',date/1000,'unixepoch') >= '2017-12-13'
+
+        return database.rawQuery(countQuery,null);
     }
 
 }

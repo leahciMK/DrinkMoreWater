@@ -9,7 +9,7 @@ import java.util.Date;
  */
 
 public class Water implements WaterEntry {
-    private Date date;
+    private String date;
     private int amount; //in ml
     private String comment;
 
@@ -25,14 +25,15 @@ public class Water implements WaterEntry {
     }
 
     @Override
-    public Date getCurrentDate() {
-        Date currentDate = new Date(System.currentTimeMillis());
-        return currentDate;
+    public String getCurrentDate() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currentDate=new Date(System.currentTimeMillis());
+        return df.format(currentDate);
     }
 
     @Override
     public String getCurrentDateToString() {
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date currentDate=new Date(System.currentTimeMillis());
 
         return df.format(currentDate);
@@ -41,17 +42,17 @@ public class Water implements WaterEntry {
 
     @Override
     public String getDateToString() {
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date currentDate=new Date(System.currentTimeMillis());
 
         return df.format(currentDate);
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

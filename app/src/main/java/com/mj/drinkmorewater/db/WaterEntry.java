@@ -7,7 +7,7 @@ import java.util.Date;
  */
 
 public interface WaterEntry {
-    Date getCurrentDate();
+    String getCurrentDate();
     String getCurrentDateToString();
     String getDateToString();
 

@@ -2,6 +2,7 @@ package com.mj.drinkmorewater.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,7 +47,7 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         public void onClick(View v) {
             if (editTextComment.getText().length() != 0) {
                 saveWater();
-                finish();
+                //finish();
             }
 //            else {
 //                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
@@ -68,6 +69,8 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
             String comment=editTextComment.getText().toString();
             Water water=new Water(amount,comment);
             databaseHandler.insertWater(water);
+
+            Log.v("Vstavil sem: ",water.getCurrentDateToString()+" "+Integer.toString(water.getAmount())+" "+water.getComment());
 
         }
 //        else {
