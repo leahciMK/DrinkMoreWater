@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
@@ -84,14 +85,15 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
             Water water=new Water(amount,comment);
             databaseHandler.insertWater(water);
 
-            Log.v("Vstavil sem: ",water.getCurrentDateToString()+" "+Integer.toString(water.getAmount())+" "+water.getComment());
+            Toast toast=Toast.makeText(getApplicationContext(),water.getCurrentDateToString()+" "+Integer.toString(water.getAmount())+" "+water.getComment(),Toast.LENGTH_SHORT);
+            toast.show();
+
+           seekBar.setProgress(0);
+           editTextComment.setText("");
+           onBackPressed();
 
         }
-//        else {
-//            databaseConnector.updateContact(rowID, nameEditText.getText().toString(), emailEditText
-//                    .getText().toString(), phoneEditText.getText().toString(), streetEditText
-//                    .getText().toString(), cityEditText.getText().toString(),commentEditText.getText().toString());
-//        }
+
     }
 
     @Override

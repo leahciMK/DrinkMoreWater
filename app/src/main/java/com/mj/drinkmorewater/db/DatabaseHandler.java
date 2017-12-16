@@ -107,19 +107,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String dateToString=dateFormat.format(date);
-//        String countQuery = "SELECT  sum(amount) as 'amount' FROM water WHERE strftime('%Y-%m-%d',date/1000,'unixepoch') = '" + dateToString+'"';
 
-        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= "+dateToString;
-
-
-        //return database.query("water",new String[] {"sum(amount)"},"amount >= "+dateToString,null,null,null,null);
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery(countQuery, null);
-//        cursor.close();
-
-        // return count
-        //return cursor;
-        //where strftime('%Y-%m-%d %H:%M:%S',date/1000,'unixepoch') >= '2017-12-13'
+        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString+"'";
 
         return database.rawQuery(countQuery,null);
     }
