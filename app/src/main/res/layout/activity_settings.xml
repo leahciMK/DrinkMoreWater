@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mj.drinkmorewater.Activities.SettingsActivity">
+    tools:context="com.mj.drinkmorewater.Activities.SettingsActivity"
+    tools:layout_editor_absoluteY="81dp">
 
-    <android.support.v7.widget.Toolbar
+<android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar2"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,7 +22,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,10 +46,11 @@
 
             <Spinner
                 android:id="@+id/gender_spinner"
-                android:layout_width="35dp"
+                android:layout_width="10dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:entries="@array/genders"/>
+                android:entries="@array/genders"
+                android:textAlignment="textEnd"/>
 
         </LinearLayout>
 
@@ -53,7 +62,7 @@
 
             <TextView
                 android:id="@+id/age_text"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/age" />
@@ -62,10 +71,12 @@
                 android:id="@+id/age_seekBar"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:max="120"/>
 
             <TextView
-                android:layout_width="30dp"
+                android:id="@+id/age_textView"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
@@ -81,7 +92,7 @@
 
             <TextView
                 android:id="@+id/weight_text"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/weight"/>
@@ -90,10 +101,12 @@
                 android:id="@+id/weight_seekBar"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:max="200"/>
 
             <TextView
-                android:layout_width="30dp"
+                android:id="@+id/weight_textView"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
@@ -111,14 +124,14 @@
                 android:id="@+id/physically_active_text"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:text="@string/physically_active" />
 
             <CheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="12dp"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <Button
@@ -126,6 +139,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save"/>
+
+
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
