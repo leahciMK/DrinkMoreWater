@@ -15,7 +15,6 @@
         android:clipChildren="true"
         android:theme="@style/AppTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
     </android.support.v7.widget.Toolbar>
 
 

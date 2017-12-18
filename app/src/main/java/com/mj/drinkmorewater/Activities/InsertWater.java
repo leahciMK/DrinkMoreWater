@@ -50,11 +50,8 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
                 onBackPressed();
             }
         });
-        seekBar.setMax(3000);
 
-
-
-
+        seekBar.setMax(20);
     }
 
     View.OnClickListener saveWaterButtonClicked = new View.OnClickListener() {
@@ -80,25 +77,30 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         DatabaseHandler databaseHandler= new DatabaseHandler(getApplicationContext());
 
         if (getIntent().getExtras() == null) {
-            int amount= seekBar.getProgress();
-            String comment=editTextComment.getText().toString();
-            Water water=new Water(amount,comment);
-            databaseHandler.insertWater(water);
+            int amount= seekBar.getProgress()*100;
+            if(amount!=0) {
+                String comment = editTextComment.getText().toString();
+                Water water = new Water(amount, comment);
+                databaseHandler.insertWater(water);
 
-            Toast toast=Toast.makeText(getApplicationContext(),water.getCurrentDateToString()+" "+Integer.toString(water.getAmount())+" "+water.getComment(),Toast.LENGTH_SHORT);
-            toast.show();
+                Toast toast = Toast.makeText(getApplicationContext(), water.getCurrentDateToString() + " " + Integer.toString(water.getAmount()) + " " + water.getComment(), Toast.LENGTH_SHORT);
+                toast.show();
 
-           seekBar.setProgress(0);
-           editTextComment.setText("");
-           onBackPressed();
-
+                seekBar.setProgress(0);
+                editTextComment.setText("");
+                onBackPressed();
+            }else{
+                Toast.makeText(this, this.getString(R.string.no_water_error)
+                        ,
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        txtMl.setText(Integer.toString((int) seekBar.getProgress()) + " ml");
+        txtMl.setText(Integer.toString((int) seekBar.getProgress()*100) + " ml");
     }
 
     @Override
