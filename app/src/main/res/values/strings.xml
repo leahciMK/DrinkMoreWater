@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">DrinkMoreWater</string>
     <string name="insert_water">Insert Water</string>
-    <string name="menuitem_add_water">Add Water</string>
     <string name="total_water_per_day">Total water today</string>
     <string name="water_amount">Water amount:</string>
     <string name="comment_insert_water">Comment:</string>
     <string name="btn_insert_water_accept">Accept</string>
-    <string name="menuitem_back">Back</string>
+    <string name="menuitem_settings">Settings</string>
     <string name="no_water_error">Adjust water amount!</string>
     <string name="settings">Settings</string>
     <string name="physically_active">Physically active:</string>
@@ -20,5 +19,6 @@
         <item>"Male"</item>
         <item>"Female</item>
     </string-array>
+
 
 </resources>

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -127,4 +129,26 @@ public class MainActivity extends AppCompatActivity {
             startActivity(viewContact);
         }
     };
+
+        @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Settings:
+                Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(intent);
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
 }
