@@ -136,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.Settings:
                 Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(intent);
+                return super.onOptionsItemSelected(item);
+
+
+            case R.id.History:
+                Intent intentHistory=new Intent(MainActivity.this,HistoryActivity.class);
+                startActivity(intentHistory);
+                return super.onOptionsItemSelected(item);
 
 
             default:

@@ -19,6 +19,8 @@
         <item>"Male"</item>
         <item>"Female</item>
     </string-array>
+    <string name="menuitem_history">History</string>
+    <string name="history_activity">History</string>
 
 
 </resources>

@@ -4,11 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/Settings"
+        android:id="@+id/History"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_history"
         android:title="@string/menuitem_settings"
         app:showAsAction="always"
-        android:titleCondensed="@string/menuitem_settings"/>
+        android:titleCondensed="@string/menuitem_history"/>
+
+    <item
+    android:id="@+id/Settings"
+    android:alphabeticShortcut="s"
+    android:icon="@drawable/ic_settings"
+    android:title="@string/menuitem_settings"
+    app:showAsAction="always"
+    android:titleCondensed="@string/menuitem_settings"/>
+
+
 
 </menu>

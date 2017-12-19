@@ -20,9 +20,15 @@
             android:name=".Activities.InsertWater"
             android:label="@string/insert_water"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".Activities.SettingsActivity"
+        <activity
+            android:name=".Activities.SettingsActivity"
             android:label="@string/settings"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".Activities.HistoryActivity"
+            android:label="@string/history_activity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>

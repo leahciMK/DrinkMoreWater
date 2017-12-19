@@ -56,11 +56,20 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         switch (seekBar.getId()) {
             case R.id.age_seekBar:
-                ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + " y");
+                if(seekBarAge.getProgress() == 100) {
+                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + "+ y");
+                }else{
+                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + " y");
+
+                }
                 break;
 
             case R.id.weight_seekBar:
-                weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + " kg");
+                if(seekBarWeight.getProgress() ==150){
+                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + "+ kg");
+                }else {
+                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + " kg");
+                }
                 break;
         }
     }
