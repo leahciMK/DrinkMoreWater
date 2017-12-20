@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -111,6 +113,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString+"'";
 
         return database.rawQuery(countQuery,null);
+    }
+
+    public Cursor getSumWaterFiveDays() {
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 5);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"'";
+
+        return database.rawQuery(countQuery,null);
+    }
+
+    public Cursor getSumWaterTenDays() {
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 10);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"'";
+
+        return database.rawQuery(countQuery,null);
+    }
+
+    public static Date subtractDays(Date date, int days) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, -days);
+
+        return cal.getTime();
     }
 
 }

@@ -21,12 +21,15 @@ import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
 
-public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Spinner.OnItemSelectedListener{
 
     SeekBar seekBar;
     EditText editTextComment;
     TextView txtMl;
     Button btnInsert;
+    Spinner drinksSpinner;
+    TextView textComment;
+    TextView textDrinks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,16 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
 
         seekBar=(SeekBar)findViewById(R.id.seekBarWaterAmount);
         editTextComment=(EditText)findViewById(R.id.editTextComment);
+        textComment=(TextView) findViewById(R.id.txtComment);
         txtMl=(TextView)findViewById(R.id.txtMl);
         btnInsert=(Button)findViewById(R.id.btnInsert);
+        drinksSpinner=(Spinner) findViewById(R.id.drinks_spinner);
+        textDrinks=(TextView) findViewById(R.id.drinks_text);
 
         btnInsert.setOnClickListener(saveWaterButtonClicked);
         seekBar.setOnSeekBarChangeListener(this);
+        drinksSpinner.setOnItemSelectedListener(this);
+
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
@@ -52,23 +60,17 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
             }
         });
 
-        seekBar.setMax(20);
+        seekBar.setMax(40);
     }
 
     View.OnClickListener saveWaterButtonClicked = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (editTextComment.getText().length() != 0) {
-                saveWater();
-                //finish();
-            }
-//            else {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//                builder.setTitle(R.string.errorTitle);
-//                builder.setMessage(R.string.errorMessage);
-//                builder.setPositiveButton(R.string.errorButton, null);
-//                builder.show();
+//            if (editTextComment.getText().length() != 0) {
+//                saveWater();
+//                //finish();
 //            }
+            saveWater();
         }
     };
 
@@ -78,11 +80,23 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         DatabaseHandler databaseHandler= new DatabaseHandler(getApplicationContext());
 
         if (getIntent().getExtras() == null) {
-            int amount= seekBar.getProgress()*100;
+            int amount= seekBar.getProgress()*50;
             if(amount!=0) {
-                String comment = editTextComment.getText().toString();
-                Water water = new Water(amount, comment);
-                databaseHandler.insertWater(water);
+                //String comment = editTextComment.getText().toString();
+
+                String drink=drinksSpinner.getSelectedItem().toString();
+
+                Water water=null;
+
+                if(!drink.equals("Custom")) {
+                    water = new Water(amount, drink);
+                    databaseHandler.insertWater(water);
+                } else {
+                    String comment = editTextComment.getText().toString();
+                    water = new Water(amount, comment);
+
+                    databaseHandler.insertWater(water);
+                }
 
                 Toast toast = Toast.makeText(getApplicationContext(), water.getCurrentDateToString() + " " + Integer.toString(water.getAmount()) + " " + water.getComment(), Toast.LENGTH_SHORT);
                 toast.show();
@@ -100,8 +114,24 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     }
 
     @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(adapterView.getSelectedItem().toString().equals("Custom")) {
+            editTextComment.setVisibility(View.VISIBLE);
+            textComment.setVisibility(View.VISIBLE);
+            drinksSpinner.setVisibility(View.INVISIBLE);
+            textDrinks.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        txtMl.setText(Integer.toString((int) seekBar.getProgress()*100) + " ml");
+        txtMl.setText(Integer.toString((int) seekBar.getProgress()*50) + " ml");
     }
 
     @Override

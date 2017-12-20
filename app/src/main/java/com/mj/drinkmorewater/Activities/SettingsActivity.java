@@ -1,5 +1,6 @@
 package com.mj.drinkmorewater.Activities;
 
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,8 @@ import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
 
+import java.text.DecimalFormat;
+
 public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
     SeekBar seekBarAge;
@@ -24,6 +27,9 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     CheckBox checkbox;
     TextView ageText;
     TextView weightText;
+    TextView dailyAmountValue;
+
+    double amountWaterPerDay=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +43,11 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         checkbox = (CheckBox)findViewById(R.id.checkBox);
         ageText = (TextView)findViewById(R.id.age_textView);
         weightText = (TextView)findViewById(R.id.weight_textView);
+        dailyAmountValue=(TextView) findViewById(R.id.txtDailyAmountValue);
 
         seekBarAge.setOnSeekBarChangeListener(this);
         seekBarWeight.setOnSeekBarChangeListener(this);
+        btnSave.setOnClickListener(saveSettings);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
 
         setSupportActionBar(myToolbar);
@@ -65,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 break;
 
             case R.id.weight_seekBar:
-                if(seekBarWeight.getProgress() ==150){
+                if(seekBarWeight.getProgress() == 150){
                     weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + "+ kg");
                 }else {
                     weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + " kg");
@@ -73,6 +81,31 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 break;
         }
     }
+
+    public void calculateWaterPerDay() {
+        DecimalFormat df = new DecimalFormat("#.##");
+        amountWaterPerDay= ((double)seekBarWeight.getProgress() / 30) * 1000;
+        if(checkbox.isChecked()) {
+            if(seekBarAge.getProgress() > 50) {
+                amountWaterPerDay += ((double)seekBarWeight.getProgress() / 10) * 200;
+            } else {
+                amountWaterPerDay += ((double)seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
+            }
+
+        }
+
+        dailyAmountValue.setText(String.valueOf(df.format(amountWaterPerDay)) +" ml");
+    }
+
+    View.OnClickListener saveSettings = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0) {
+                calculateWaterPerDay();
+            }
+
+        }
+    };
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBarAge) {
