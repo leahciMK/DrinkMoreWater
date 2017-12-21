@@ -33,6 +33,8 @@
     <string name="history_activity">History</string>
     <string name="drink">Drink: </string>
     <string name="Daily_amount_of_water">Calculated daily amount: </string>
+    <string name="view_my_waters">View my intake</string>
+    <string name="activity_view_my_water">My water</string>
 
 
 </resources>

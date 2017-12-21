@@ -66,10 +66,6 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     View.OnClickListener saveWaterButtonClicked = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            if (editTextComment.getText().length() != 0) {
-//                saveWater();
-//                //finish();
-//            }
             saveWater();
         }
     };
@@ -142,26 +138,28 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.btnBack:
-//                onBackPressed();
-//
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//
-//
-//        }
-//
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
-//        getMenuInflater().inflate(R.menu.menu_insert_water, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.viewWater:
+                Intent intent = new Intent(InsertWater.this,ViewMyWater.class);
+                startActivity(intent);
+                return super.onOptionsItemSelected(item);
+
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
+        getMenuInflater().inflate(R.menu.menu_insert_water, menu);
+        return true;
+    }
 
     @Override
     public void onBackPressed() {

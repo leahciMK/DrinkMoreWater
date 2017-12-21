@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/viewWater"
+        android:alphabeticShortcut="s"
+        android:icon="@drawable/ic_view_water"
+        android:title="@string/view_my_waters"
+        app:showAsAction="always"
+        android:titleCondensed="@string/view_my_waters"/>
+
+</menu>

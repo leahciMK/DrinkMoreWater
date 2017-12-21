@@ -24,11 +24,13 @@
             android:name=".Activities.SettingsActivity"
             android:label="@string/settings"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".Activities.HistoryActivity"
+        <activity
+            android:name=".Activities.HistoryActivity"
             android:label="@string/history_activity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".Activities.ViewMyWater"
+            android:label="@string/activity_view_my_water"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

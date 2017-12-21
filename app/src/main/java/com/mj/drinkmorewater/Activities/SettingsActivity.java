@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     TextView weightText;
     TextView dailyAmountValue;
 
-    double amountWaterPerDay=0;
+    int  amountWaterPerDay=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +84,12 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     public void calculateWaterPerDay() {
         DecimalFormat df = new DecimalFormat("#.##");
-        amountWaterPerDay= ((double)seekBarWeight.getProgress() / 30) * 1000;
+        amountWaterPerDay= (seekBarWeight.getProgress() / 30) * 1000;
         if(checkbox.isChecked()) {
             if(seekBarAge.getProgress() > 50) {
-                amountWaterPerDay += ((double)seekBarWeight.getProgress() / 10) * 200;
+                amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 200;
             } else {
-                amountWaterPerDay += ((double)seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
+                amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
             }
 
         }

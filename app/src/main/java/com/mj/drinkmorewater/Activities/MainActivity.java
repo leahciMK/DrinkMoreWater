@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     TextView txtWaterPerDay;
 
-    ListView listViewWater;
-    CursorAdapter waterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         txtWaterPerDay=(TextView) findViewById(R.id.txtDataWaterPerDay);
-
-        listViewWater = (ListView) findViewById(R.id.listViewWater);
-        listViewWater.setOnItemClickListener(viewWaterListener);
 
         Water water=new Water();
         String str=water.getCurrentDate();
@@ -60,12 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String[] from = new String[]{"date","amount","comment"};
-        int[] to = new int[]{R.id.dateTextView,R.id.amountTextView,R.id.commentTextView};
 
-        waterAdapter = new SimpleCursorAdapter(MainActivity.this,
-                R.layout.view_water, null, from, to, 0);
-        listViewWater.setAdapter(waterAdapter);
 
 
     }
@@ -107,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
-        waterAdapter.changeCursor(databaseHandler.getAllWatersSortedByDate());
 
         Cursor cursor=databaseHandler.getWaterPerDay();
         cursor=databaseHandler.getSumWaterToday();
@@ -120,15 +109,6 @@ public class MainActivity extends AppCompatActivity {
         txtWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
 
     }
-
-    AdapterView.OnItemClickListener viewWaterListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            final Intent viewContact = new Intent(MainActivity.this, InsertWater.class);
-            viewContact.putExtra("_id", arg3);
-            startActivity(viewContact);
-        }
-    };
 
         @Override
     public boolean onOptionsItemSelected(MenuItem item) {
