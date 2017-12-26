@@ -11,15 +11,22 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.util.Scanner;
 
 public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
+    final private static String filename = "data.txt";
     SeekBar seekBarAge;
     SeekBar seekBarWeight;
     Spinner spinnerGender;
@@ -40,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         seekBarWeight = (SeekBar)findViewById(R.id.weight_seekBar);
         spinnerGender = (Spinner)findViewById(R.id.gender_spinner);
         btnSave  = (Button)findViewById(R.id.save_btn);
-        checkbox = (CheckBox)findViewById(R.id.checkBox);
+        checkbox = (CheckBox)findViewById(R.id.checkBox); //physical activity
         ageText = (TextView)findViewById(R.id.age_textView);
         weightText = (TextView)findViewById(R.id.weight_textView);
         dailyAmountValue=(TextView) findViewById(R.id.txtDailyAmountValue);
@@ -58,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 onBackPressed();
             }
         });
+
+        loadData();
     }
 
     @Override
@@ -102,8 +111,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         public void onClick(View view) {
             if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0) {
                 calculateWaterPerDay();
+                saveData();
             }
-
         }
     };
 
@@ -121,5 +130,55 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    private void saveData() {
+        try {
+            FileOutputStream stream = openFileOutput(filename, MODE_PRIVATE);
+            OutputStreamWriter writer = new OutputStreamWriter(stream);
+            writer.write(spinnerGender.getSelectedItem().toString() + System.lineSeparator());
+            int age = (int)seekBarAge.getProgress();
+            int weight = (int)seekBarWeight.getProgress();
+            writer.write(Integer.toString(age) + System.lineSeparator());
+            writer.write(Integer.toString(weight) + System.lineSeparator());
+            writer.write(checkbox.isChecked() ? "YES" : "NO");
+            writer.write(System.lineSeparator());
+            writer.write(dailyAmountValue.getText().toString() + System.lineSeparator());
+            writer.close();
+
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Data saved.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        catch (IOException e) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Saving data failed", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    private void loadData() {
+        try {
+            FileInputStream stream = openFileInput(filename);
+            Scanner scanner = new Scanner(stream);
+            if (scanner.nextLine().equals("Male"))
+                spinnerGender.setSelection(0);
+            else
+                spinnerGender.setSelection(1);
+            int age = (int)(Integer.parseInt(scanner.nextLine()));
+            seekBarAge.setProgress(age);
+            int weight = (int)(Integer.parseInt(scanner.nextLine()));
+            seekBarWeight.setProgress(weight);
+            checkbox.setChecked(scanner.nextLine().equals("YES"));
+            dailyAmountValue.setText(scanner.nextLine());
+            scanner.close();
+        }
+        catch (IOException e) {
+            spinnerGender.setSelection(0);
+            seekBarAge.setProgress(0);
+            seekBarWeight.setProgress(0);
+            checkbox.setChecked(false);
+            dailyAmountValue.setText("");
+        }
     }
 }
