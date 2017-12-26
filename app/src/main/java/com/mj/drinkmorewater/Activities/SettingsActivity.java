@@ -147,7 +147,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             writer.close();
 
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Data saved.", Toast.LENGTH_SHORT);
+                    "Data saved", Toast.LENGTH_SHORT);
             toast.show();
         }
         catch (IOException e) {
