@@ -98,7 +98,13 @@ public class HistoryActivity extends AppCompatActivity {
                 break;
         }
         cursor.moveToFirst();
-        graph.getViewport().setMaxY(cursor.getInt(0)+1000);
+        int max = cursor.getInt(0);
+        if(max+1000 % 2000 ==0){
+            max += 1000;
+        }else{
+         max +=2000; 
+        }
+        graph.getViewport().setMaxY(max);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
