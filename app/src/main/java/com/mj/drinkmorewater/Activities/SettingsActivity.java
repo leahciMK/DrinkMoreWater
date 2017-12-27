@@ -1,6 +1,11 @@
 package com.mj.drinkmorewater.Activities;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +18,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
@@ -37,6 +45,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     TextView dailyAmountValue;
 
     int  amountWaterPerDay=0;
+
+    FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +77,57 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         });
 
         loadData();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        int permLocationFine = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        int permLocationCoarse=checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (permLocationFine != PackageManager.PERMISSION_GRANTED ||
+                permLocationCoarse != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this, // Aktivnost, ki zahteva pravice.
+                    new String[]{ // Tabela zahtevanih pravic.
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    },
+                    100 // Poljubna koda zahtevka, tipa int.
+            );
+        }
+
+
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            Toast.makeText(getApplicationContext(),location.toString(),Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, // koda zahtevka
+            String permissions[], // tabela zahtevanih pravic
+            int[] grantResults) // tabela odobritev
+    {
+        if (requestCode == 100) { // Če je št. zahtevka enaka 100.
+            if (grantResults.length > 0) {
+
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Prva pravica je bila odobrena.
+                }
+                if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // Druga pravica je bila odobrena.
+                }
+            }
+        }
+    }
+
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
