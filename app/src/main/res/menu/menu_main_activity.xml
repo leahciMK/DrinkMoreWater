@@ -6,7 +6,7 @@
     <item
         android:id="@+id/History"
         android:alphabeticShortcut="s"
-        android:icon="@drawable/ic_history"
+        android:icon="@drawable/ic_chart"
         android:title="@string/menuitem_settings"
         app:showAsAction="always"
         android:titleCondensed="@string/menuitem_history"/>

@@ -36,6 +36,10 @@
     <string name="Daily_amount_of_water">Calculated daily amount: </string>
     <string name="view_my_waters">View my intake</string>
     <string name="activity_view_my_water">My water</string>
+    <string-array name="graph_unit">
+        <item>"5 days"</item>
+        <item>"10 days"</item>
+    </string-array>
 
 
 </resources>

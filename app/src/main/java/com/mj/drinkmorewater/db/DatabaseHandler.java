@@ -124,7 +124,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String dateToString=dateFormat.format(date);
         String dateToString2=dateFormat.format(daysAgo);
 
-        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"'";
+        String countQuery="SELECT date, sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"'";
 
         return database.rawQuery(countQuery,null);
     }
@@ -151,4 +151,67 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cal.getTime();
     }
 
+    public Cursor getGroupedSumWaterFiveDays() {
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 5);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT date(date) as 'date', sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"' GROUP BY date(date) ORDER BY date(date) DESC";
+
+        return database.rawQuery(countQuery,null);
+    }
+    public Cursor getGroupedSumWaterTenDays() {
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 10);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT date(date) as 'date', sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"' GROUP BY date(date) ORDER BY date(date) DESC";
+
+        return database.rawQuery(countQuery,null);
+    }
+    public Cursor getMaxGroupedSumWaterFiveDays(){
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 5);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT max(amount) FROM (SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"' GROUP BY date(date) ORDER BY date(date) DESC)";
+
+        return database.rawQuery(countQuery,null);
+    }
+
+    public Cursor getMaxGroupedSumWaterTenDays(){
+        open();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Date daysAgo=subtractDays(date, 10);
+
+        String dateToString=dateFormat.format(date);
+        String dateToString2=dateFormat.format(daysAgo);
+
+        String countQuery="SELECT max(amount) FROM (SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"' GROUP BY date(date) ORDER BY date(date) DESC)";
+
+        return database.rawQuery(countQuery,null);
+    }
+
+    //method for testing
+    public void insertTenDaysTestwater(){
+        for (int i=0; i<10; i++){
+            Water w = new Water(i*100, "voda", "2017-12-"+Integer.toString(27-i)+" 12:12:12");
+            insertWater(w);
+            Water w2 = new Water(i*100+50*i, "voda", "2017-12-"+Integer.toString(27-i)+" 12:12:12");
+            insertWater(w2);
+        }
+    }
 }

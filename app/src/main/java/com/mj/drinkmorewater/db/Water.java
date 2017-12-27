@@ -24,6 +24,12 @@ public class Water implements WaterEntry {
         this.date=getCurrentDate();
     }
 
+    public Water(int amount, String comment,String date) {
+        this.amount=amount;
+        this.comment=comment;
+        this.date= date;
+    }
+
     @Override
     public String getCurrentDate() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
