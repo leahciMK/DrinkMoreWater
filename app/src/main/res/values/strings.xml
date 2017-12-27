@@ -40,6 +40,8 @@
         <item>"5 days"</item>
         <item>"10 days"</item>
     </string-array>
+    <string name="location_text">Your current location: </string>
+    <string name="current_weather_info">Current weather information: </string>
 
 
 </resources>

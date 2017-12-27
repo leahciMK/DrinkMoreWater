@@ -1,12 +1,18 @@
 package com.mj.drinkmorewater.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView txtAlreadyWaterPerDay;
     TextView txtAllWaterPerDay;
+    TextView currentLocation;
+    TextView currentWeatherInfo;
 
     final private static String getAMountLocation="amountlocation.txt";
     static Location location;
@@ -50,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     static String cityName="";
     static String weatherInfo="";
     static double currentTemp=0;
+    static String countryName="";
 
     private Response.Listener<JSONObject> jsonArrayListener = new Response.Listener<JSONObject>() {
         @Override
@@ -77,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject temperatures=response.getJSONObject("main");
                     if(temperatures.length() > 0) {
                         currentTemp = temperatures.getDouble("temp");
+                    }
+
+                    JSONObject country=response.getJSONObject("sys");
+                    if(country.length() > 0) {
+                        countryName = country.getString("country");
                     }
 
                     cityName = response.getString("name");
@@ -118,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtAlreadyWaterPerDay = (TextView) findViewById(R.id.txtDataWaterToday);
         txtAllWaterPerDay = (TextView) findViewById(R.id.txtDataWaterTotalToday);
+        currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
+        currentWeatherInfo =(TextView) findViewById(R.id.txtWeatherInfo);
+
+
+
+
+        if (!isNetworkAvailable()){
+            showInternetDisabledAlertToUser();
+        }
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -140,6 +163,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+
+    private void showInternetDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Internet is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable Internet",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        Settings.ACTION_WIFI_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
     @Override
     public void onBackPressed() {
         finish();
@@ -158,32 +209,6 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(request);
 
 
-//        DatabaseHandler databaseHandler=new DatabaseHandler(getApplicationContext());
-//        databaseHandler.open();
-//        Cursor cursor=databaseHandler.getAllWatersSortedByDate();
-//
-//
-//        List<Water> waterList=new ArrayList<>();
-//
-//        cursor.moveToNext();
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Water water1= new Water();
-//                water1.setDate(cursor.getString(1));
-//                water1.setAmount(Integer.parseInt(cursor.getString(2)));
-//                water1.setComment(cursor.getString(3));
-//
-//                waterList.add(water1);
-//
-//            } while (cursor.moveToNext());
-//        }
-//        String s="";
-//
-//        for(Water w : waterList) {
-//            s+=String.valueOf(w.getDate())+" "+String.valueOf(w.getAmount())+ " "+w.getComment()+"\n";
-//            txtWaterPerDay.setText(s);
-//        }
-
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
 
@@ -196,6 +221,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
+        if(cityName != "" && weatherInfo != "" && countryName != "") {
+            currentLocation.setText("City: "+cityName + "\n"+"Country: "+countryName);
+            currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + " °C");
+        }
+
 
 
 
@@ -243,14 +273,6 @@ public class MainActivity extends AppCompatActivity {
             location=new Location("provider");
             location.setLongitude(longitude);
             location.setLatitude(latitude);
-
-            //http://api.openweathermap.org/data/2.5/weather?lat=latitude&lon=longitude&appid=37783e3aee7050d7c1e9441f395f41bd
-
-
-
-
-//            location.setLongitude(longitude);
-//            location.setLatitude(latitude);
             scanner.close();
 
         }

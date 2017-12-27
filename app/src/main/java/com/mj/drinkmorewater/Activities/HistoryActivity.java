@@ -119,7 +119,11 @@ public class HistoryActivity extends AppCompatActivity {
                     return newValue.substring(5);
                 } else {
                     // show L on y values
+<<<<<<< Updated upstream
                     return super.formatLabel(value/1000.0, isValueX) + " L";
+=======
+                    return super.formatLabel(value, isValueX) + " ml";
+>>>>>>> Stashed changes
                 }
             }
         });
