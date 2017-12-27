@@ -2,13 +2,18 @@ package com.mj.drinkmorewater.Activities;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +45,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -70,6 +77,12 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            showGPSDisabledAlertToUser();
+        }
 
         seekBarAge = (SeekBar)findViewById(R.id.age_seekBar);
         seekBarWeight = (SeekBar)findViewById(R.id.weight_seekBar);
@@ -123,9 +136,18 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
         // new Google API SDK v11 uses getFusedLocationProviderClient(this)
-        getFusedLocationProviderClient(this);
-
+        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        // do work here
+                        onLocationChanged(locationResult.getLastLocation());
+                    }
+                },
+                Looper.myLooper());
     }
+
+
+
 
     public void getLastLocation() {
         // Get last known recent location using new Google Play Services SDK (v11+)
@@ -160,7 +182,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        currentLocation=location;
+
+        locationText.setText(latLng.toString());
     }
 
 
@@ -187,6 +210,28 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         }
     }
 
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Goto Settings Page To Enable GPS",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
 
 
     @Override
@@ -208,10 +253,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                     100 // Poljubna koda zahtevka, tipa int.
             );
         } else {
-            if(currentLocation != null) {
-                locationText.setText(currentLocation.toString());
-            }
-           
+
+
         }
 
 
