@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DrinkMoreWater</string>
+    <string name="app_name">DrinkWater</string>
     <string name="insert_water">Insert Water</string>
     <string name="total_water_already_today">Total water already today</string>
     <string name="total_water_all_today">Total water today</string>
@@ -31,7 +31,7 @@
         <item>"Custom"</item>
     </string-array>
     <string name="menuitem_history">History</string>
-    <string name="history_activity">History</string>
+    <string name="history_activity">My Water History</string>
     <string name="drink">Drink: </string>
     <string name="Daily_amount_of_water">Calculated daily amount: </string>
     <string name="view_my_waters">View my intake</string>

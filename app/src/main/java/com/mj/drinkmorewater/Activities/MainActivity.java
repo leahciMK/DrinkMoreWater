@@ -9,12 +9,15 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
@@ -44,31 +47,56 @@ public class MainActivity extends AppCompatActivity {
     static Location location;
 
     private RequestQueue requestQueue;
+    static String cityName="";
+    static String weatherInfo="";
+    static double currentTemp=0;
 
-//    private Response.Listener<JSONArray> jsonArrayListener = new Response.Listener<JSONArray>() {
-//        @Override
-//        public void onResponse(JSONArray response) {
-//            ArrayList<HashMap<String, String>> data = new ArrayList<>();
-//            for (int i = 0; i < response.length(); i++) {
-//                try {
-//                    JSONObject object = response.getJSONObject(i);
-//                    String name = object.getString("name");
-//                    String info = "";
-//                    JSONArray domains = object.getJSONArray("topLevelDomain");
-//                    if (domains.length() > 0)
-//                        info =domains.getString(0);
-//                    HashMap<String, String> map = new HashMap<>();
-//                    map.put("name", name);
-//                    map.put("info", info);
-//                    data.add(map);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    return;
-//                }
-//            }
-//
-//        }
-//    };
+    private Response.Listener<JSONObject> jsonArrayListener = new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            for (int i = 0; i < response.length(); i++) {
+                try {
+
+                    weatherInfo = "";
+
+
+                    JSONArray weather=response.getJSONArray("weather");
+
+
+                    if (weather.length() > 0) {
+                        JSONObject object=weather.getJSONObject(0);
+
+                        String main=object.getString("main");
+                        String desc=object.getString("description");
+
+
+                        weatherInfo += main+"- ";
+                        weatherInfo += desc;
+
+                    }
+                    JSONObject temperatures=response.getJSONObject("main");
+                    if(temperatures.length() > 0) {
+                        currentTemp = temperatures.getDouble("temp");
+                    }
+
+                    cityName = response.getString("name");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+
+        }
+    };
+
+    private Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.d("REST error", error.getMessage());
+        }
+    };
 
 
 
@@ -90,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtAlreadyWaterPerDay = (TextView) findViewById(R.id.txtDataWaterToday);
         txtAllWaterPerDay = (TextView) findViewById(R.id.txtDataWaterTotalToday);
+
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
 
 
         Water water = new Water();
@@ -118,6 +148,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        loadData();
+
+        //http://api.openweathermap.org/data/2.5/weather?lat=46.22&lon=15.16&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric
+
+        String url ="http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric";
+        JsonObjectRequest request=new JsonObjectRequest(Request.Method.GET,url,null,jsonArrayListener,errorListener);
+        requestQueue.add(request);
 
 
 //        DatabaseHandler databaseHandler=new DatabaseHandler(getApplicationContext());
@@ -159,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
         txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
 
-        loadData();
+
 
     }
 
