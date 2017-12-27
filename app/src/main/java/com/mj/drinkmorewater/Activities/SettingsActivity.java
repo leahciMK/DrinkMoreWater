@@ -54,6 +54,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
     final private static String filename = "data.txt";
+    final private static String getAMountLocation="amountlocation.txt";
     SeekBar seekBarAge;
     SeekBar seekBarWeight;
     Spinner spinnerGender;
@@ -69,8 +70,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private LocationRequest mLocationRequest;
 
-    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private long UPDATE_INTERVAL = 10 * 1000;  /* 100 secs */
+    private long FASTEST_INTERVAL = 2000; /* 200 sec */
 
 
     @Override
@@ -107,10 +108,6 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 onBackPressed();
             }
         });
-        startLocationUpdates();
-
-        loadData();
-
 
 
 
@@ -119,31 +116,53 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     // Trigger new location updates at interval
     protected void startLocationUpdates() {
 
-        // Create the location request to start receiving updates
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        int permLocationCoarse=checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permLocationFine=checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        int permInternet=checkSelfPermission(Manifest.permission.INTERNET);
 
-        // Create LocationSettingsRequest object using location request
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        LocationSettingsRequest locationSettingsRequest = builder.build();
+        if (permLocationCoarse != PackageManager.PERMISSION_GRANTED
+                || permLocationFine != PackageManager.PERMISSION_GRANTED || permInternet != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this, // Aktivnost, ki zahteva pravice.
+                    new String[]{ // Tabela zahtevanih pravic.
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.INTERNET
+                    },
+                    100 // Poljubna koda zahtevka, tipa int.
+            );
+        } else {
 
-        // Check whether location settings are satisfied
-        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
-        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-        settingsClient.checkLocationSettings(locationSettingsRequest);
+            // Create the location request to start receiving updates
+            mLocationRequest = new LocationRequest();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(UPDATE_INTERVAL);
+            mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
-        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        // do work here
-                        onLocationChanged(locationResult.getLastLocation());
-                    }
-                },
-                Looper.myLooper());
+            // Create LocationSettingsRequest object using location request
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+            builder.addLocationRequest(mLocationRequest);
+            LocationSettingsRequest locationSettingsRequest = builder.build();
+
+            // Check whether location settings are satisfied
+            // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
+            SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+            settingsClient.checkLocationSettings(locationSettingsRequest);
+
+            // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+            getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                        @Override
+                        public void onLocationResult(LocationResult locationResult) {
+                            // do work here
+                            onLocationChanged(locationResult.getLastLocation());
+                        }
+                    },
+                    Looper.myLooper());
+
+
+        }
+
+
     }
 
 
@@ -182,8 +201,9 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+        currentLocation=location;
 
-        locationText.setText(latLng.toString());
+        //locationText.setText(latLng.toString());
     }
 
 
@@ -198,6 +218,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Prva pravica je bila odobrena.
+
                 }
                 if(grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     //druga bila odobrena
@@ -237,28 +258,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     @Override
     protected void onResume() {
         super.onResume();
-        int permLocationCoarse=checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
-        int permLocationFine=checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-        int permInternet=checkSelfPermission(Manifest.permission.INTERNET);
-
-        if (permLocationCoarse != PackageManager.PERMISSION_GRANTED
-                || permLocationFine != PackageManager.PERMISSION_GRANTED || permInternet != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this, // Aktivnost, ki zahteva pravice.
-                    new String[]{ // Tabela zahtevanih pravic.
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.INTERNET
-                    },
-                    100 // Poljubna koda zahtevka, tipa int.
-            );
-        } else {
 
 
-        }
-
-
-
+        startLocationUpdates();
+        loadData();
 
     }
 
@@ -302,7 +305,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     View.OnClickListener saveSettings = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0) {
+            if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0 && currentLocation != null) {
                 calculateWaterPerDay();
                 saveData();
             }
@@ -328,6 +331,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     private void saveData() {
 
 
+
         try {
             FileOutputStream stream = openFileOutput(filename, MODE_PRIVATE);
             OutputStreamWriter writer = new OutputStreamWriter(stream);
@@ -338,8 +342,17 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             writer.write(Integer.toString(weight) + System.lineSeparator());
             writer.write(checkbox.isChecked() ? "YES" : "NO");
             writer.write(System.lineSeparator());
-            writer.write(dailyAmountValue.getText().toString() + System.lineSeparator());
+            writer.write(amountWaterPerDay + System.lineSeparator());
+            writer.write(currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
+
             writer.close();
+
+            stream=openFileOutput(getAMountLocation,MODE_PRIVATE);
+            writer=new OutputStreamWriter(stream);
+            writer.write(amountWaterPerDay + System.lineSeparator());
+            writer.write(currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
+            writer.close();
+
 
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Data saved", Toast.LENGTH_SHORT);
@@ -367,6 +380,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             seekBarWeight.setProgress(weight);
             checkbox.setChecked(scanner.nextLine().equals("YES"));
             dailyAmountValue.setText(scanner.nextLine());
+            locationText.setText(scanner.nextLine());
             scanner.close();
         }
         catch (IOException e) {
