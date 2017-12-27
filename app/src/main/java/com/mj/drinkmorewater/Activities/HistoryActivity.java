@@ -79,6 +79,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         DataPoint[] dt = new DataPoint[cursor.getCount()];
         for (int i=0; i<cursor.getCount(); i++){
+            Log.d("test", Integer.toString(i) + Integer.toString(cursor.getInt(1)));
             dt[i] = new DataPoint(i, cursor.getInt(1));
             cursor.moveToNext();
         }
@@ -99,12 +100,8 @@ public class HistoryActivity extends AppCompatActivity {
         }
         cursor.moveToFirst();
         int max = cursor.getInt(0);
-        if(max+1000 % 2000 ==0){
-            max += 1000;
-        }else{
-         max +=2000; 
-        }
-        graph.getViewport().setMaxY(max);
+        graph.getViewport().setMaxY(max+1000);
+        graph.getViewport().setMinY(0);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
@@ -117,12 +114,12 @@ public class HistoryActivity extends AppCompatActivity {
                         case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
                             break;
                     }
-                    cursor.moveToPosition(cursor.getCount()- (int)value-1);
+                    cursor.moveToPosition((int)value);
                     String newValue = cursor.getString(0);
                     return newValue.substring(5);
                 } else {
                     // show L on y values
-                    return super.formatLabel(value/1000, isValueX) + " L";
+                    return super.formatLabel(value/1000.0, isValueX) + " L";
                 }
             }
         });
