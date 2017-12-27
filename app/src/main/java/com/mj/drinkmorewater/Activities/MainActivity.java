@@ -12,10 +12,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,10 +21,17 @@ import com.mj.drinkmorewater.db.Water;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +42,34 @@ public class MainActivity extends AppCompatActivity {
 
     final private static String getAMountLocation="amountlocation.txt";
     static Location location;
+
+    private RequestQueue requestQueue;
+
+//    private Response.Listener<JSONArray> jsonArrayListener = new Response.Listener<JSONArray>() {
+//        @Override
+//        public void onResponse(JSONArray response) {
+//            ArrayList<HashMap<String, String>> data = new ArrayList<>();
+//            for (int i = 0; i < response.length(); i++) {
+//                try {
+//                    JSONObject object = response.getJSONObject(i);
+//                    String name = object.getString("name");
+//                    String info = "";
+//                    JSONArray domains = object.getJSONArray("topLevelDomain");
+//                    if (domains.length() > 0)
+//                        info =domains.getString(0);
+//                    HashMap<String, String> map = new HashMap<>();
+//                    map.put("name", name);
+//                    map.put("info", info);
+//                    data.add(map);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    return;
+//                }
+//            }
+//
+//        }
+//    };
+
 
 
     @Override
