@@ -42,6 +42,8 @@
     </string-array>
     <string name="location_text">Your current location: </string>
     <string name="current_weather_info">Current weather information: </string>
+    <string name="history_menu_5days">5 days</string>
+    <string name="history_menu_10days">10 days</string>
 
 
 </resources>

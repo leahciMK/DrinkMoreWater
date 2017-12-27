@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemFivedays"
+        android:alphabeticShortcut="5"
+        android:title="@string/history_menu_5days"
+        android:titleCondensed="@string/view_my_waters"/>
+
+    <item
+        android:id="@+id/itemTendays"
+        android:alphabeticShortcut="10"
+        android:title="@string/history_menu_10days"
+        android:titleCondensed="@string/view_my_waters"/>
+
+</menu>

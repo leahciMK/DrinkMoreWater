@@ -143,16 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-
-
-        Water water = new Water();
-        String str = water.getCurrentDate();
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-//        Toast toast = Toast.makeText(context, str, duration);
-//        toast.show();
-
+        
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
