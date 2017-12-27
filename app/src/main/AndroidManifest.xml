@@ -11,7 +11,7 @@
 
 <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_water"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -26,7 +26,8 @@
         <activity
             android:name=".Activities.InsertWater"
             android:label="@string/insert_water"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+           />
         <activity
             android:name=".Activities.SettingsActivity"
             android:label="@string/settings"
@@ -35,6 +36,7 @@
             android:name=".Activities.HistoryActivity"
             android:label="@string/history_activity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".Activities.ViewMyWater"
             android:label="@string/activity_view_my_water"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
