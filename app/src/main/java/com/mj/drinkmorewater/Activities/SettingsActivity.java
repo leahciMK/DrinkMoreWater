@@ -208,7 +208,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                     100 // Poljubna koda zahtevka, tipa int.
             );
         } else {
-            locationText.setText(currentLocation.toString());
+            if(currentLocation != null) {
+                locationText.setText(currentLocation.toString());
+            }
+           
         }
 
 
