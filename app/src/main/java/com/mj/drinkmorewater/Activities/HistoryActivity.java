@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Spinner;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -25,16 +24,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.mj.drinkmorewater.db.DatabaseHandler.subtractDays;
+
 public class HistoryActivity extends AppCompatActivity {
 
-    Spinner spinner;
+    String selected = "5 days";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        spinner = (Spinner)findViewById(R.id.graph_spinner);
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar2);
 
         setSupportActionBar(myToolbar);
@@ -44,21 +43,6 @@ public class HistoryActivity extends AppCompatActivity {
             public void onClick(View view) {
                 onBackPressed();
             }
-        });
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                GraphView graph = (GraphView) findViewById(R.id.graph);
-                graph.removeAllSeries();
-                onResume();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
         });
     }
 
@@ -72,7 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
         //databaseHandler.insertTenDaysTestwater();
 
         Cursor cursor = null;
-        switch(spinner.getSelectedItem().toString()) {
+        switch(selected) {
             case "5 days" :  cursor = databaseHandler.getGroupedSumWaterFiveDays();
                             break;
             case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
@@ -80,10 +64,19 @@ public class HistoryActivity extends AppCompatActivity {
         }
         cursor.moveToFirst();
 
+        //date foramter
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
         DataPoint[] dt = new DataPoint[cursor.getCount()];
         for (int i=0; i<cursor.getCount(); i++){
-            Log.d("test", Integer.toString(i) + Integer.toString(cursor.getInt(1)));
-            dt[i] = new DataPoint(i, cursor.getInt(1));
+            try {
+                date = format.parse(cursor.getString(0));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Log.d("test", Integer.toString(i) + Integer.toString(cursor.getInt(1)) + " "+ cursor.getString(0));
+            dt[i] = new DataPoint(date, cursor.getInt(1));
             cursor.moveToNext();
         }
 
@@ -95,7 +88,8 @@ public class HistoryActivity extends AppCompatActivity {
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         graph.addSeries(series);
-        switch(spinner.getSelectedItem().toString()) {
+        //for geting max amount of water
+        switch(selected) {
             case "5 days" :  cursor = databaseHandler.getMaxGroupedSumWaterFiveDays();
                 break;
             case "10 days":  cursor = databaseHandler.getMaxGroupedSumWaterTenDays();
@@ -110,36 +104,47 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    Cursor cursor = null;
-                    switch(spinner.getSelectedItem().toString()) {
-                        case "5 days" :  cursor = databaseHandler.getGroupedSumWaterFiveDays();
-                            break;
-                        case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
-                            break;
-                    }
-                    cursor.moveToPosition((int)value);
-                    String newValue = cursor.getString(0);
-                    return newValue.substring(5);
+                    return super.formatLabel(value, isValueX);
                 } else {
-                    // show L on y values
-
+                    // show ml on y values
                     return super.formatLabel(value, isValueX) + " ml";
 
                 }
             }
         });
+        //added for date formating
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+        graph.getGridLabelRenderer().setHumanRounding(false);
+        Date maxX = new Date();
+        Date minX = new Date();
+        switch(selected) {
+            case "5 days" :  minX=subtractDays(maxX, 5);
+
+                break;
+            case "10 days":  minX=subtractDays(maxX, 10);
+                break;
+        }
+        // set manual x bounds to have nice steps
+        graph.getViewport().setMinX(minX.getTime());
+        graph.getViewport().setMaxX(maxX.getTime());
+        graph.getViewport().setXAxisBoundsManual(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph.removeAllSeries();
+
         switch (item.getItemId()) {
             case R.id.itemFivedays:
-
+                selected="5 days";
+                onResume();
                 return super.onOptionsItemSelected(item);
 
-
             case R.id.itemTendays:
-
+                selected="10 days";
+                onResume();
                 return super.onOptionsItemSelected(item);
 
 

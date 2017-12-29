@@ -214,9 +214,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //method for testing
     public void insertTenDaysTestwater(){
         for (int i=0; i<11; i++){
-            Water w = new Water(i*100, "voda", "2017-12-"+Integer.toString(27-i)+" 12:12:12");
+            Water w = new Water(i*100, "voda", "2017-12-"+Integer.toString(30-i)+" 12:12:12");
             insertWater(w);
-            Water w2 = new Water(i*100+50*i, "voda", "2017-12-"+Integer.toString(27-i)+" 12:12:12");
+            Water w2 = new Water(i*100+50*i, "voda", "2017-12-"+Integer.toString(30-i)+" 12:12:12");
             insertWater(w2);
         }
     }
