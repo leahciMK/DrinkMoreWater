@@ -1,6 +1,5 @@
 package com.mj.drinkmorewater.Activities;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,14 +19,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
@@ -40,16 +38,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
     FloatingActionButton floatingActionButton;
     private ProgressDialog pDialog;
@@ -71,60 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     public AlertDialog alert;
     public boolean isPaused=false;
-
-
-    private Response.Listener<JSONObject> jsonArrayListener = new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject response) {
-            for (int i = 0; i < response.length(); i++) {
-                try {
-
-                    weatherInfo = "";
-
-
-                    JSONArray weather=response.getJSONArray("weather");
-
-
-                    if (weather.length() > 0) {
-                        JSONObject object=weather.getJSONObject(0);
-
-                        String main=object.getString("main");
-                        String desc=object.getString("description");
-
-
-                        weatherInfo += main+"- ";
-                        weatherInfo += desc;
-
-                    }
-                    JSONObject temperatures=response.getJSONObject("main");
-                    if(temperatures.length() > 0) {
-                        currentTemp = temperatures.getDouble("temp");
-                    }
-
-                    JSONObject country=response.getJSONObject("sys");
-                    if(country.length() > 0) {
-                        countryName = country.getString("country");
-                    }
-
-                    cityName = response.getString("name");
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-
-        }
-    };
-
-    private Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.d("REST error", error.getMessage());
-        }
-    };
-
+    GestureDetector gestureDetector;
 
 
 
@@ -134,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
         //code if the app HAS run before
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean("hasRun", false);
-        if(!previouslyStarted) {
+        if (!previouslyStarted) {
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
             edit.commit();
-            Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
             finish();
         }
@@ -147,25 +89,24 @@ public class MainActivity extends AppCompatActivity {
         txtAlreadyWaterPerDay = (TextView) findViewById(R.id.txtDataWaterToday);
         txtAllWaterPerDay = (TextView) findViewById(R.id.txtDataWaterTotalToday);
         currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
-        currentWeatherInfo =(TextView) findViewById(R.id.txtWeatherInfo);
+        currentWeatherInfo = (TextView) findViewById(R.id.txtWeatherInfo);
 
-        DatabaseHandler databaseHandler=new DatabaseHandler(this);
-        Cursor cursor=databaseHandler.getLastWaterEntry();
+
+        gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
+
+        DatabaseHandler databaseHandler = new DatabaseHandler(this);
+        Cursor cursor = databaseHandler.getLastWaterEntry();
         cursor.moveToFirst();
 
-        lastWaterEntry=cursor.getString(0);
+        lastWaterEntry = cursor.getString(0);
 
-        if(checkLastEntryFor2Hours(lastWaterEntry)) {
+        if (checkLastEntryFor2Hours(lastWaterEntry)) {
             sendNotification();
 
         }
 
 
-
-        //Toast.makeText(getApplicationContext(),lastDate,Toast.LENGTH_LONG).show();
-
-
-        if (!isNetworkAvailable()){
+        if (!isNetworkAvailable()) {
             showInternetDisabledAlertToUser();
         }
 
@@ -175,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //requestQueue = Volley.newRequestQueue(getApplicationContext());
-        
+
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,11 +126,96 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(cityName == "" && weatherInfo == "" && countryName == "") {
+        if (cityName == "" && weatherInfo == "" && countryName == "") {
             currentLocation.setText("...");
             currentWeatherInfo.setText("...");
         }
+
+
+
+
     }
+
+    //Gesture Methods
+
+
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent1, MotionEvent motionEvent2, float X, float Y) {
+
+
+        if(motionEvent1.getX() - motionEvent2.getX() > 50){
+
+            //Toast.makeText(MainActivity.this , " Swipe Left " , Toast.LENGTH_LONG).show();
+            Intent intent=new Intent(MainActivity.this,InsertWater.class);
+            startActivity(intent);
+            this.gestureDetector=null;
+            return true;
+        }
+
+        if(motionEvent2.getX() - motionEvent1.getX() > 50) {
+
+            //Toast.makeText(MainActivity.this, " Swipe Right ", Toast.LENGTH_LONG).show();
+            Intent intent=new Intent(MainActivity.this,InsertWater.class);
+            startActivity(intent);
+            this.gestureDetector=null;
+            return true;
+        }
+        else {
+
+            return true ;
+        }
+    }
+
+    @Override
+    public void onLongPress(MotionEvent arg0) {
+
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+
+        // TODO Auto-generated method stub
+
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent arg0) {
+
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent arg0) {
+
+        // TODO Auto-generated method stub
+
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+
+        // TODO Auto-generated method stub
+
+        return gestureDetector.onTouchEvent(motionEvent);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent arg0) {
+
+        // TODO Auto-generated method stub
+
+        return false;
+    }
+
+
+
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -277,13 +303,17 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         isPaused=true;
         new JSONParse().execute();
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
         loadData();
+
 
 
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());

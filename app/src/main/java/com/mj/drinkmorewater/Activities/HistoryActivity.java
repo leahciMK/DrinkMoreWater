@@ -114,7 +114,7 @@ public class HistoryActivity extends AppCompatActivity {
         });
         //added for date formating
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4 because of the space
         graph.getGridLabelRenderer().setHumanRounding(false);
         Date maxX = new Date();
         Date minX = new Date();
