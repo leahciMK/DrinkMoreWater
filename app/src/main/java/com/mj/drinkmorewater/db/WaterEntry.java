@@ -11,4 +11,5 @@ public interface WaterEntry {
     String getCurrentDateToString();
     String getDateToString();
 
+
 }

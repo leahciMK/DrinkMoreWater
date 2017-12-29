@@ -1,7 +1,9 @@
 package com.mj.drinkmorewater.db;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -45,6 +47,9 @@ public class Water implements WaterEntry {
         return df.format(currentDate);
 
     }
+
+
+
 
     @Override
     public String getDateToString() {
