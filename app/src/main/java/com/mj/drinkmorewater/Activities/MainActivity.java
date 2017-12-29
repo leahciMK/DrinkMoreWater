@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     static String lastWaterEntry="";
 
     public AlertDialog alert;
+    public boolean isPaused=false;
 
 
     private Response.Listener<JSONObject> jsonArrayListener = new Response.Listener<JSONObject>() {
@@ -170,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if(cityName == "" && weatherInfo == "" && countryName == "") {
-            currentLocation.setText("retrieving data from server");
-            currentWeatherInfo.setText("retrieving data from server");
+            currentLocation.setText("...");
+            currentWeatherInfo.setText("...");
         }
     }
 
@@ -206,6 +207,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPaused=true;
+        new JSONParse().execute();
     }
 
     @Override
@@ -253,12 +261,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.Settings:
                 Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(intent);
+
                 return super.onOptionsItemSelected(item);
 
 
             case R.id.History:
                 Intent intentHistory=new Intent(MainActivity.this,HistoryActivity.class);
                 startActivity(intentHistory);
+
                 return super.onOptionsItemSelected(item);
 
 
@@ -356,10 +366,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
-            pDialog.show();
+            if(!isPaused) {
+                pDialog = new ProgressDialog(MainActivity.this);
+                pDialog.setMessage("Please wait...");
+                pDialog.setCancelable(false);
+                pDialog.show();
+            }
+
+
 
 
         }
