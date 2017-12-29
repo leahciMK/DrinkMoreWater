@@ -64,7 +64,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
         cursor.moveToFirst();
 
-        //date foramter
+        //date formater
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
 
@@ -104,7 +104,9 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    return super.formatLabel(value, isValueX);
+                    String myDateStr = new SimpleDateFormat("dd/MM").format(new Date((new Double(value)).longValue()));
+                    return myDateStr;
+                    //return super.formatLabel(value, isValueX);
                 } else {
                     // show ml on y values
                     return super.formatLabel(value, isValueX) + " ml";
@@ -113,16 +115,16 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
         //added for date formating
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4 because of the space
+//        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(4); // only 4 because of the space
         graph.getGridLabelRenderer().setHumanRounding(false);
         Date maxX = new Date();
         Date minX = new Date();
         switch(selected) {
-            case "5 days" :  minX=subtractDays(maxX, 5);
+            case "5 days" :  minX=subtractDays(maxX, 4);
 
                 break;
-            case "10 days":  minX=subtractDays(maxX, 10);
+            case "10 days":  minX=subtractDays(maxX, 9);
                 break;
         }
         // set manual x bounds to have nice steps
@@ -147,11 +149,8 @@ public class HistoryActivity extends AppCompatActivity {
                 onResume();
                 return super.onOptionsItemSelected(item);
 
-
             default:
                 return super.onOptionsItemSelected(item);
-
-
         }
 
     }
