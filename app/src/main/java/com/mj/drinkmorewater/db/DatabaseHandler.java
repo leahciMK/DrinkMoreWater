@@ -204,6 +204,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return database.rawQuery(countQuery,null);
     }
 
+    public Cursor getLastWaterEntry() {
+        open();
+
+        String lastEntryQuery="SELECT date FROM water ORDER BY date DESC LIMIT 1";
+        return database.rawQuery(lastEntryQuery,null);
+    }
+
     //method for testing
     public void insertTenDaysTestwater(){
         for (int i=0; i<11; i++){
