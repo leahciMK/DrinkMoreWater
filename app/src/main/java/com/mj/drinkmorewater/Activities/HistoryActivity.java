@@ -116,10 +116,14 @@ public class HistoryActivity extends AppCompatActivity {
         });
         //added for date formating
 //        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(4); // only 4 because of the space
+        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4 because of the space
         graph.getGridLabelRenderer().setHumanRounding(false);
         Date maxX = new Date();
+        maxX.setHours(0);
+        maxX.setMinutes(0);
         Date minX = new Date();
+        minX.setHours(0);
+        minX.setMinutes(0);
         switch(selected) {
             case "5 days" :  minX=subtractDays(maxX, 4);
 
