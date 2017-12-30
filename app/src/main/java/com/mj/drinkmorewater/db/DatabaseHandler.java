@@ -81,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public Cursor getAllWatersSortedByDate() {
         return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
-                "date");
+                "date desc");
     }
     public Cursor getWaterPerDay() {
         Water a=new Water();

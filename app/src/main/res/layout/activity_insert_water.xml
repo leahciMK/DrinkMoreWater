@@ -43,14 +43,15 @@
                 android:id="@+id/seekBarWaterAmount"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:progress="5"/>
 
             <TextView
                 android:id="@+id/txtMl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="0 ml" />
+                android:text="250 ml" />
         </LinearLayout>
 
         <TextView

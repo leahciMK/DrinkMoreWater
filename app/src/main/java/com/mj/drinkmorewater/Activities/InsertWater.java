@@ -97,7 +97,7 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
                 Toast toast = Toast.makeText(getApplicationContext(), water.getCurrentDateToString() + " " + Integer.toString(water.getAmount()) + " " + water.getComment(), Toast.LENGTH_SHORT);
                 toast.show();
 
-                seekBar.setProgress(0);
+                seekBar.setProgress(5);
                 editTextComment.setText("");
                 onBackPressed();
             }else{
