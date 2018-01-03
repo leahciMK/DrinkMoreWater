@@ -40,6 +40,9 @@
         <activity android:name=".Activities.ViewMyWater"
             android:label="@string/activity_view_my_water"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <service android:name=".NotificationService" android:enabled="true" android:exported="true" />
+
     </application>
 
 </manifest>

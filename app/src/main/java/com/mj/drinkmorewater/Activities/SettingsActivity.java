@@ -70,8 +70,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private LocationRequest mLocationRequest;
 
-    private long UPDATE_INTERVAL = 10 * 1000;  /* 100 secs */
-    private long FASTEST_INTERVAL = 2000; /* 200 sec */
+    private long UPDATE_INTERVAL = 1000 * 1000;  /* 1000 secs */
+    private long FASTEST_INTERVAL = 200000; /* 200 sec */
 
 
     @Override
@@ -197,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 

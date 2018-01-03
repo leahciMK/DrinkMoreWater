@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mj.drinkmorewater.NotificationService;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
@@ -91,14 +92,16 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
         currentWeatherInfo = (TextView) findViewById(R.id.txtWeatherInfo);
 
+        startService(new Intent(MainActivity.this, NotificationService.class));
+
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
         DatabaseHandler databaseHandler = new DatabaseHandler(this);
         Cursor cursor = databaseHandler.getLastWaterEntry();
-        cursor.moveToFirst();
-
-        lastWaterEntry = cursor.getString(0);
+        if(cursor.moveToFirst()) {
+            lastWaterEntry = cursor.getString(0);
+        }
 
         if (checkLastEntryFor2Hours(lastWaterEntry)) {
             sendNotification();
