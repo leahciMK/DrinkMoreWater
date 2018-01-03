@@ -20,6 +20,7 @@ import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,9 +72,14 @@ public class NotificationService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+
+                    int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
+                    //return currentHour < 18 //False if after 6pm
+
                     // display toast
                     Toast.makeText(NotificationService.this, "Service is running", Toast.LENGTH_SHORT).show();
-                    if (checkLastEntryFor2Hours(lastWaterEntry)) {
+
+                    if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 8 && currentHour <= 24)) {
                         sendNotification();
 
                     }
@@ -89,8 +95,8 @@ public class NotificationService extends Service {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
+                        .setContentTitle("Drink Water!")
+                        .setContentText("You didn't drink water for 2 hours!");
 
 
         // Gets an instance of the NotificationManager service//
@@ -111,6 +117,7 @@ public class NotificationService extends Service {
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000);
+
 
         try {
             Date lastEntry=df.parse(lastWaterEntry);
