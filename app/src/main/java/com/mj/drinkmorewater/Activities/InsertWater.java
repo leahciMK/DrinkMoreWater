@@ -1,6 +1,7 @@
 package com.mj.drinkmorewater.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,8 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     TextView textComment;
     TextView textDrinks;
 
+    int idOfWater=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,34 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         btnInsert.setOnClickListener(saveWaterButtonClicked);
         seekBar.setOnSeekBarChangeListener(this);
         drinksSpinner.setOnItemSelectedListener(this);
+
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                idOfWater = bundle.getInt("_id");
+                DatabaseHandler databaseHandler=new DatabaseHandler(this);
+                Cursor cursor=databaseHandler.getOneWater(idOfWater);
+
+                if(cursor.moveToFirst()) {
+                    String date=cursor.getString(0);
+                    int amount=cursor.getInt(1);
+                    String comment=cursor.getString(2);
+
+                    seekBar.setProgress(amount);
+                    int index=getIndex(drinksSpinner,comment);
+
+
+                    drinksSpinner.setSelection(index);
+                }
+
+
+                if (idOfWater == 0) {
+                    idOfWater=0;
+                }
+            }
+        }
 
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -70,6 +101,18 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         }
     };
 
+    private int getIndex(Spinner spinner, String myString)
+    {
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
 
 
     private void saveWater() {

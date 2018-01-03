@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import com.mj.drinkmorewater.Activities.InsertWater;
 import com.mj.drinkmorewater.Activities.MainActivity;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 
@@ -30,10 +31,12 @@ import java.util.TimerTask;
  */
 
 public class NotificationService extends Service {
-    public static final int notify = 7200000;  //interval between two services(Here Service run every 2 hours)
+    public static final int notify = 3600*1000;  //interval between two services(Here Service run every 1 hour)
     private Handler mHandler = new Handler();   //run on another Thread to avoid crash
     private Timer mTimer = null;    //timer handling
     private String lastWaterEntry="";
+
+    public static int id=1;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -79,7 +82,7 @@ public class NotificationService extends Service {
                     // display toast
                     Toast.makeText(NotificationService.this, "Service is running", Toast.LENGTH_SHORT).show();
 
-                    if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 8 && currentHour <= 24)) {
+                    if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 7 && currentHour <= 23)) {
                         sendNotification();
 
                     }
@@ -92,12 +95,14 @@ public class NotificationService extends Service {
 
         //Get an instance of NotificationManager//
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setContentTitle("Drink Water!")
-                        .setContentText("You didn't drink water for 2 hours!");
+        Notification n  = new Notification.Builder(this)
+                .setContentTitle("Drink Water!")
+                .setContentText("You didn't drink water for 1 hour!")
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setAutoCancel(true).build();
 
+        n.contentIntent=PendingIntent.getActivity(this, 0,
+                new Intent(this, InsertWater.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Gets an instance of the NotificationManager service//
 
@@ -111,12 +116,13 @@ public class NotificationService extends Service {
         // If the previous notification is still visible, the system will update this existing notification,
         // rather than create a new one. In this example, the notification’s ID is 001//
 
-        mNotificationManager.notify(001, mBuilder.build());
+        mNotificationManager.notify(id, n);
+        id++;
     }
 
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000);
+        Date minustwoHours=new Date(System.currentTimeMillis() - 3600*1000); //1hour
 
 
         try {

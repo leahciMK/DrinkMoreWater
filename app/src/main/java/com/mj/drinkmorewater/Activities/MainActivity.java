@@ -97,18 +97,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
-        DatabaseHandler databaseHandler = new DatabaseHandler(this);
-        Cursor cursor = databaseHandler.getLastWaterEntry();
-        if(cursor.moveToFirst()) {
-            lastWaterEntry = cursor.getString(0);
-        }
-
-        if (checkLastEntryFor2Hours(lastWaterEntry)) {
-            sendNotification();
-
-        }
-
-
         if (!isNetworkAvailable()) {
             showInternetDisabledAlertToUser();
         }
@@ -226,54 +214,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         return activeNetworkInfo != null;
     }
 
-    public void sendNotification() {
-
-        //Get an instance of NotificationManager//
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-
-
-        // Gets an instance of the NotificationManager service//
-
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // When you issue multiple notifications about the same type of event,
-        // it’s best practice for your app to try to update an existing notification
-        // with this new information, rather than immediately creating a new notification.
-        // If you want to update this notification at a later date, you need to assign it an ID.
-        // You can then use this ID whenever you issue a subsequent notification.
-        // If the previous notification is still visible, the system will update this existing notification,
-        // rather than create a new one. In this example, the notification’s ID is 001//
-
-        mNotificationManager.notify(001, mBuilder.build());
-    }
-
-    public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000);
-
-        try {
-            Date lastEntry=df.parse(lastWaterEntry);
-
-            if(lastEntry.before(minustwoHours)) {
-                return true;
-            }
-
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-
-        return false;
-    }
-
     private void showInternetDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Internet is disabled in your device. Would you like to enable it?")
@@ -306,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         super.onPause();
         isPaused=true;
         new JSONParse().execute();
+
 
 
 
@@ -398,9 +339,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 pDialog.setMessage("Please wait...");
                 pDialog.setCancelable(false);
                 pDialog.show();
+
+                //show image at the start of activity
             }
-
-
 
 
         }
