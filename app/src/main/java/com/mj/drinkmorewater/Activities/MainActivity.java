@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,6 +16,8 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 
 import com.mj.drinkmorewater.NotificationReciever;
 import com.mj.drinkmorewater.NotificationService;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
@@ -66,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     public boolean isPaused=false;
     GestureDetector gestureDetector;
 
-
+    int alreadyAmount=0;
+    int totalamount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +127,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             currentLocation.setText("...");
             currentWeatherInfo.setText("...");
         }
-
-
-
-
     }
 
     //Gesture Methods
@@ -267,9 +268,22 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         if(cursor.moveToFirst()) {
             int amount=cursor.getInt(0);
             txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
+            alreadyAmount=amount;
+
         }
 
+        CircularProgressBar circularProgressBar = (CircularProgressBar)findViewById(R.id.CircularProgressbar);
+        circularProgressBar.setColor(Color.parseColor("#1525d6"));
+        circularProgressBar.setBackgroundColor(Color.parseColor("#cddfff"));
+        circularProgressBar.setProgressBarWidth(20);
+        circularProgressBar.setBackgroundProgressBarWidth(5);
+        int animationDuration = 2500; // 2500ms = 2,5s
+        int progress = (int) (alreadyAmount / Double.parseDouble((String) txtAllWaterPerDay.getText()) *100);
+        Log.d("test",Integer.toString(alreadyAmount));
+        Log.d("test",(String) txtAllWaterPerDay.getText());
+        Log.d("test",Integer.toString(progress));
 
+        circularProgressBar.setProgressWithAnimation(progress, animationDuration); // Default duration = 1500ms
 
 
     }

@@ -24,7 +24,12 @@
         android:orientation="vertical"
         android:paddingTop="60dp"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        tools:layout_editor_absoluteY="8dp"
+        android:padding="10dp">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
 
         <TextView
             android:id="@+id/txtWaterAmount"
