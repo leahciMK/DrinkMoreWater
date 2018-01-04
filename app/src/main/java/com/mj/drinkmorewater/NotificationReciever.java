@@ -41,12 +41,6 @@ public class NotificationReciever extends BroadcastReceiver {
             lastWaterEntry = cursor.getString(0);
         }
 
-        Intent intent1 = new Intent(context,InsertWater.class);
-        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //if we want ring on notifcation then uncomment below line//
-//        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,100,intent1,PendingIntent.FLAG_UPDATE_CURRENT);
-
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
         //return currentHour < 18 //False if after 6pm
 
