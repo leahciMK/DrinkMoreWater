@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -31,12 +32,33 @@ import java.util.TimerTask;
  */
 
 public class NotificationService extends Service {
-    public static final int notify = 3600*1000;  //interval between two services(Here Service run every 1 hour)
+    public static final int notify = 3600000; //3600*1000;  //interval between two services(Here Service run every 1 hour)
     private Handler mHandler = new Handler();   //run on another Thread to avoid crash
     private Timer mTimer = null;    //timer handling
     private String lastWaterEntry="";
 
     public static int id=1;
+
+    private Runnable periodicUpdate = new Runnable() {
+        @Override
+        public void run() {
+            mHandler.postDelayed(periodicUpdate, notify);
+            int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
+            //return currentHour < 18 //False if after 6pm
+
+            // display toast
+            Toast.makeText(NotificationService.this, "Service is running", Toast.LENGTH_SHORT).show();
+
+            if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 7 && currentHour <= 23)) {
+                sendNotification();
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
+
+            }
+        }
+    };
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -57,7 +79,15 @@ public class NotificationService extends Service {
 
         }
 
-        mTimer.scheduleAtFixedRate(new TimeDisplay(), 0, notify);   //Schedule task
+        //mTimer.scheduleAtFixedRate(new TimeDisplay(), 0, notify);   //Schedule task
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        mHandler.post(periodicUpdate);
+
+        return START_STICKY;
     }
 
     @Override
@@ -84,6 +114,9 @@ public class NotificationService extends Service {
 
                     if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 7 && currentHour <= 23)) {
                         sendNotification();
+                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        // Vibrate for 500 milliseconds
+                        v.vibrate(500);
 
                     }
                 }
@@ -99,7 +132,10 @@ public class NotificationService extends Service {
                 .setContentTitle("Drink Water!")
                 .setContentText("You didn't drink water for 1 hour!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
+
                 .setAutoCancel(true).build();
+
+
 
         n.contentIntent=PendingIntent.getActivity(this, 0,
                 new Intent(this, InsertWater.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -115,6 +151,7 @@ public class NotificationService extends Service {
         // You can then use this ID whenever you issue a subsequent notification.
         // If the previous notification is still visible, the system will update this existing notification,
         // rather than create a new one. In this example, the notification’s ID is 001//
+
 
         mNotificationManager.notify(id, n);
         id++;

@@ -1,6 +1,7 @@
 package com.mj.drinkmorewater.Activities;
 
-import android.app.NotificationManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,6 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,16 +27,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mj.drinkmorewater.NotificationReciever;
 import com.mj.drinkmorewater.NotificationService;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 import com.android.volley.RequestQueue;
 
@@ -92,8 +89,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
         currentWeatherInfo = (TextView) findViewById(R.id.txtWeatherInfo);
 
-        startService(new Intent(MainActivity.this, NotificationService.class));
+        //startService(new Intent(MainActivity.this, NotificationService.class));
 
+        Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10, 3600 * 1000, pendingIntent );
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
@@ -248,8 +249,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         new JSONParse().execute();
 
 
-
-
     }
 
     @Override
@@ -265,17 +264,23 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         Cursor cursor=databaseHandler.getSumWaterToday();
 
-        cursor.moveToFirst();
+        if(cursor.moveToFirst()) {
+            int amount=cursor.getInt(0);
+            txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
+        }
 
-        int amount=cursor.getInt(0);
 
-
-        txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
 
 
     }
 
-        @Override
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //DemoJob.scheduleJob();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.Settings:
@@ -353,7 +358,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             HttpHandler sh = new HttpHandler();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric");
+            String jsonStr="";
+
+            if(location != null) {
+                jsonStr = sh.makeServiceCall("http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric");
+            }
+
 
             Log.e("", "Response from url: " + jsonStr);
 

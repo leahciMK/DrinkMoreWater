@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.alarm.permission.SET_ALARM"/>﻿
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 
 
@@ -41,7 +44,14 @@
             android:label="@string/activity_view_my_water"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <service android:name=".NotificationService" android:enabled="true" android:exported="true" />
+    <receiver android:name=".NotificationReciever">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+        </intent-filter>
+    </receiver>
+
+
+        <!-- <service android:name=".NotificationService" android:enabled="true" android:exported="true" /> -->
 
     </application>
 
