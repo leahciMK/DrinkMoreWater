@@ -22,7 +22,7 @@ import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.Water;
 
-public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Spinner.OnItemSelectedListener{
+public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Spinner.OnItemSelectedListener {
 
     SeekBar seekBar;
     EditText editTextComment;
@@ -32,52 +32,24 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
     TextView textComment;
     TextView textDrinks;
 
-    int idOfWater=0;
+    long idOfWater = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_water);
 
-        seekBar=(SeekBar)findViewById(R.id.seekBarWaterAmount);
-        editTextComment=(EditText)findViewById(R.id.editTextComment);
-        textComment=(TextView) findViewById(R.id.txtComment);
-        txtMl=(TextView)findViewById(R.id.txtMl);
-        btnInsert=(Button)findViewById(R.id.btnInsert);
-        drinksSpinner=(Spinner) findViewById(R.id.drinks_spinner);
-        textDrinks=(TextView) findViewById(R.id.drinks_text);
+        seekBar = (SeekBar) findViewById(R.id.seekBarWaterAmount);
+        editTextComment = (EditText) findViewById(R.id.editTextComment);
+        textComment = (TextView) findViewById(R.id.txtComment);
+        txtMl = (TextView) findViewById(R.id.txtMl);
+        btnInsert = (Button) findViewById(R.id.btnInsert);
+        drinksSpinner = (Spinner) findViewById(R.id.drinks_spinner);
+        textDrinks = (TextView) findViewById(R.id.drinks_text);
 
         btnInsert.setOnClickListener(saveWaterButtonClicked);
         seekBar.setOnSeekBarChangeListener(this);
         drinksSpinner.setOnItemSelectedListener(this);
-
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                idOfWater = bundle.getInt("_id");
-                DatabaseHandler databaseHandler=new DatabaseHandler(this);
-                Cursor cursor=databaseHandler.getOneWater(idOfWater);
-
-                if(cursor.moveToFirst()) {
-                    String date=cursor.getString(0);
-                    int amount=cursor.getInt(1);
-                    String comment=cursor.getString(2);
-
-                    seekBar.setProgress(amount);
-                    int index=getIndex(drinksSpinner,comment);
-
-
-                    drinksSpinner.setSelection(index);
-                }
-
-
-                if (idOfWater == 0) {
-                    idOfWater=0;
-                }
-            }
-        }
 
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -101,12 +73,11 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         }
     };
 
-    private int getIndex(Spinner spinner, String myString)
-    {
+    private int getIndex(Spinner spinner, String myString) {
         int index = 0;
 
-        for (int i=0;i<spinner.getCount();i++){
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
                 index = i;
                 break;
             }
@@ -114,20 +85,53 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         return index;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                idOfWater = bundle.getLong("_id");
+                DatabaseHandler databaseHandler=new DatabaseHandler(this);
+                databaseHandler.open();
+                Cursor cursor=databaseHandler.getOneWater(idOfWater);
+
+                if(cursor.moveToFirst()) {
+
+                    String date=cursor.getString(1);
+                    int amount=cursor.getInt(2);
+                    String comment=cursor.getString(3);
+
+                    seekBar.setProgress(amount/50);
+                    int index=getIndex(drinksSpinner,comment);
+
+
+                    drinksSpinner.setSelection(index);
+                }
+
+
+                if (idOfWater == 0) {
+                    idOfWater=0;
+                }
+            }
+        }
+    }
 
     private void saveWater() {
-        DatabaseHandler databaseHandler= new DatabaseHandler(getApplicationContext());
+        DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
 
         if (getIntent().getExtras() == null) {
-            int amount= seekBar.getProgress()*50;
-            if(amount!=0) {
+            int amount = seekBar.getProgress() * 50;
+            if (amount != 0) {
                 //String comment = editTextComment.getText().toString();
 
-                String drink=drinksSpinner.getSelectedItem().toString();
+                String drink = drinksSpinner.getSelectedItem().toString();
 
-                Water water=null;
+                Water water = null;
 
-                if(!drink.equals("Custom")) {
+                if (!drink.equals("Custom")) {
                     water = new Water(amount, drink);
                     databaseHandler.insertWater(water);
                 } else {
@@ -143,70 +147,113 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
                 seekBar.setProgress(5);
                 editTextComment.setText("");
                 onBackPressed();
-            }else{
+            } else {
+
                 Toast.makeText(this, this.getString(R.string.no_water_error)
                         ,
                         Toast.LENGTH_LONG).show();
             }
-        }
+        } else {
+            Intent intent = getIntent();
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                idOfWater = bundle.getLong("_id");
+                databaseHandler.open();
+                Cursor cursor = databaseHandler.getOneWater(idOfWater);
 
-    }
+                if (cursor.moveToFirst()) {
+                    int amount1 = seekBar.getProgress() * 50;
+                    String drink = drinksSpinner.getSelectedItem().toString();
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(adapterView.getSelectedItem().toString().equals("Custom")) {
-            editTextComment.setVisibility(View.VISIBLE);
-            textComment.setVisibility(View.VISIBLE);
-            drinksSpinner.setVisibility(View.INVISIBLE);
-            textDrinks.setVisibility(View.INVISIBLE);
+                    if (!drink.equals("Custom")) {
+                        databaseHandler.updateWater(cursor.getLong(0), cursor.getString(1), amount1, drink);
 
-        }
-    }
+                    } else {
+                        String comment = editTextComment.getText().toString();
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+                        databaseHandler.updateWater(cursor.getLong(0), cursor.getString(1), amount1, comment);
+                    }
 
-    }
+                    Toast.makeText(this, "Succesfully updated"
+                            ,
+                            Toast.LENGTH_LONG).show();
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        txtMl.setText(Integer.toString((int) seekBar.getProgress()*50) + " ml");
-    }
+                    Intent intent1=new Intent(this,ViewMyWater.class);
+                    startActivity(intent1);
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.viewWater:
-                Intent intent = new Intent(InsertWater.this,ViewMyWater.class);
-                startActivity(intent);
-                return super.onOptionsItemSelected(item);
+                }
 
 
-            default:
-                return super.onOptionsItemSelected(item);
-
+                if (idOfWater == 0) {
+                    idOfWater = 0;
+                }
+            }
 
         }
-
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
-        getMenuInflater().inflate(R.menu.menu_insert_water, menu);
-        return true;
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+
+        @Override
+        public void onItemSelected (AdapterView < ? > adapterView, View view,int i, long l){
+            if (adapterView.getSelectedItem().toString().equals("Custom")) {
+                editTextComment.setVisibility(View.VISIBLE);
+                textComment.setVisibility(View.VISIBLE);
+                drinksSpinner.setVisibility(View.INVISIBLE);
+                textDrinks.setVisibility(View.INVISIBLE);
+
+            }
+        }
+
+        @Override
+        public void onNothingSelected (AdapterView < ? > adapterView){
+
+        }
+
+        @Override
+        public void onProgressChanged (SeekBar seekBar,int i, boolean b){
+            Intent intent = getIntent();
+            if (intent == null) {
+                txtMl.setText(Integer.toString((int) seekBar.getProgress() * 50) + " ml");
+            } else {
+                txtMl.setText(Integer.toString(seekBar.getProgress() * 50) + " ml");
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch (SeekBar seekBar){
+        }
+
+        @Override
+        public void onStopTrackingTouch (SeekBar seekBar){
+        }
+
+        @Override
+        public boolean onOptionsItemSelected (MenuItem item){
+            switch (item.getItemId()) {
+                case R.id.viewWater:
+                    Intent intent = new Intent(InsertWater.this, ViewMyWater.class);
+                    startActivity(intent);
+                    return super.onOptionsItemSelected(item);
+
+
+                default:
+                    return super.onOptionsItemSelected(item);
+
+
+            }
+
+        }
+
+        @Override
+        public boolean onCreateOptionsMenu (Menu menu){ //load toolbar
+            getMenuInflater().inflate(R.menu.menu_insert_water, menu);
+            return true;
+        }
+
+        @Override
+        public void onBackPressed () {
+            super.onBackPressed();
+            finish();
+        }
     }
-}

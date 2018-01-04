@@ -3,7 +3,10 @@
     android:id="@+id/contactLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
+
     android:orientation="horizontal">
+
+
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/dateTextView"
@@ -16,16 +19,27 @@
         android:id="@+id/amountTextView"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:minHeight="30dp"
+        android:minHeight="40dp"
         android:textSize="20dp"
         android:layout_width="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/amountTextViewml"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="40dp"
+        android:textSize="10dp"
+        android:text="ml"
+
         />
 
     <TextView
         android:id="@+id/commentTextView"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:minHeight="50dp"
+        android:minHeight="40dp"
         android:textSize="20dp"
         android:layout_width="wrap_content"
         />

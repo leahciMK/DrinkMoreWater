@@ -69,9 +69,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         close();
     }
 
-    public void updateWater(long id, Date date, int amount, String comment) {
+    public void updateWater(long id, String date, int amount, String comment) {
         ContentValues editWater = new ContentValues();
-        editWater.put("date", date.getTime());
+        editWater.put("date", date);
         editWater.put("amount", amount);
         editWater.put("comment",comment);
 
@@ -95,7 +95,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getOneWater(long id) {
-        return database.query("water", null, "_id=" + id, null, null, null, null);
+        return database.query("water", new String[]{"_id", "date", "amount","comment"}, "_id=" + id, null, null, null, null);
     }
 
     public void deleteWater(long id) {

@@ -43,7 +43,8 @@
             android:label="@string/activity_view_my_water"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-    <receiver android:name=".NotificationReciever">
+    <receiver android:name=".NotificationReciever"
+        android:enabled="true">
         <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED" />
         </intent-filter>

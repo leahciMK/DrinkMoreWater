@@ -58,10 +58,10 @@ public class ViewMyWater extends AppCompatActivity {
     AdapterView.OnItemClickListener viewWaterListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            Bundle bundle=new Bundle();
+            //Bundle bundle=new Bundle();
             final Intent viewContact = new Intent(ViewMyWater.this, InsertWater.class);
-            bundle.putInt("_id",arg2);
-            viewContact.putExtras(bundle);
+            //bundle.putInt("_id",arg2);
+            viewContact.putExtra("_id",arg3);
             startActivity(viewContact);
         }
     };
