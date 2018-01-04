@@ -13,6 +13,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -31,7 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.NotificationReciever;
-import com.mj.drinkmorewater.NotificationService;
+
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.api.HttpHandler;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 10, 3600 * 1000, pendingIntent );
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HOUR, pendingIntent );
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
@@ -291,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //DemoJob.scheduleJob();
+
     }
 
     @Override
