@@ -313,6 +313,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0 && currentLocation != null) {
                 calculateWaterPerDay();
                 saveData();
+            }else{
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Invalid input.", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     };
