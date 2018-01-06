@@ -68,6 +68,7 @@ public class HistoryActivity extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
 
+        //nardimo DataPoint z točkami ki se bojo prikazovale na grafu (podatke dobimo iz baze)
         DataPoint[] dt = new DataPoint[cursor.getCount()];
         for (int i=0; i<cursor.getCount(); i++){
             try {
@@ -80,6 +81,7 @@ public class HistoryActivity extends AppCompatActivity {
             cursor.moveToNext();
         }
 
+        //Graph design
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dt);
         series.setDrawBackground(true);
         series.setBackgroundColor(Color.argb(84, 10, 10, 230));
@@ -87,7 +89,7 @@ public class HistoryActivity extends AppCompatActivity {
         series.setDataPointsRadius(8);
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        graph.addSeries(series);
+        graph.addSeries(series);    //dodamo točke na graf
         //for geting max amount of water
         switch(selected) {
             case "5 days" :  cursor = databaseHandler.getMaxGroupedSumWaterFiveDays();
@@ -96,17 +98,17 @@ public class HistoryActivity extends AppCompatActivity {
                 break;
         }
         cursor.moveToFirst();
-        int max = cursor.getInt(0);
+        int max = cursor.getInt(0); //vemo koliko je maximalna količina vode in lahko nastavimo višino y-osi
         graph.getViewport().setMaxY(max+1000);
         graph.getViewport().setMinY(0);
         graph.getViewport().setYAxisBoundsManual(true);
+        //formatiramo oznake na y in x oseh
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
                     String myDateStr = new SimpleDateFormat("dd/MM").format(new Date((new Double(value)).longValue()));
                     return myDateStr;
-                    //return super.formatLabel(value, isValueX);
                 } else {
                     // show ml on y values
                     return super.formatLabel(value, isValueX) + " ml";
@@ -114,12 +116,11 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
         });
-        //added for date formating
-//        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4 because of the space
+
+        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4  labels on x because of the space
         graph.getGridLabelRenderer().setHumanRounding(false);
         Date maxX = new Date();
-        maxX.setHours(0);
+        maxX.setHours(0);       //odrežemo ure in minute, pustimo samo datum da je graf lepši
         maxX.setMinutes(0);
         Date minX = new Date();
         minX.setHours(0);
@@ -131,7 +132,7 @@ public class HistoryActivity extends AppCompatActivity {
             case "10 days":  minX=subtractDays(maxX, 9);
                 break;
         }
-        // set manual x bounds to have nice steps
+        //nastavim omejitve od kje do kje je X-os (odvisno al je izbran 5 ali 10 dni)
         graph.getViewport().setMinX(minX.getTime());
         graph.getViewport().setMaxX(maxX.getTime());
         graph.getViewport().setXAxisBoundsManual(true);
