@@ -35,6 +35,7 @@ import com.mj.drinkmorewater.NotificationReciever;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.SplashScreen;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             edit.commit();
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
-            finish();
+
         }
 
         setContentView(R.layout.activity_main);
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_HOUR, pendingIntent );
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 7200*1000, AlarmManager.INTERVAL_HOUR * 2, pendingIntent );
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
@@ -110,8 +111,19 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         loadData();
 
-        new JSONParse().execute();
+        //new JSONParse().execute();
 
+        Intent i = getIntent();
+        cityName = i.getStringExtra("cityName");
+        weatherInfo = i.getStringExtra("weatherInfo");
+        currentTemp=i.getDoubleExtra("currentTemp",0);
+        countryName=i.getStringExtra("countryName");
+
+
+        if(cityName != "" && weatherInfo != "" && countryName != "") {
+            currentLocation.setText("City: "+cityName + "\n"+"Country: "+countryName);
+            currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + " °C");
+        }
 
         //requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -248,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onPause() {
         super.onPause();
         isPaused=true;
-        new JSONParse().execute();
+        //new JSONParse().execute();
 
 
     }
@@ -464,6 +476,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         protected void onPostExecute(Void result) {
 
             super.onPostExecute(result);
+
+//            Intent i = new Intent(MainActivity.this, SplashScreen.class);
+//            startActivity(i);
 
             // Dismiss the progress dialog
             if (pDialog.isShowing())
