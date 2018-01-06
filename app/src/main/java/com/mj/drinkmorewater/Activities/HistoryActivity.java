@@ -103,8 +103,6 @@ public class HistoryActivity extends AppCompatActivity {
     public void setupGraph() {
         final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
-        //only for testing
-        //databaseHandler.insertTenDaysTestwater();
 
         Cursor cursor = null;
         switch(selected) {

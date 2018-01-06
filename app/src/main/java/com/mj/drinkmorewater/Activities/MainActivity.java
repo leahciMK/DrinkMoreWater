@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     int alreadyAmount=0;
     int totalamount = 0;
 
-    String allwater; //julijan pomožna spremenljivka
+    String allwater = "0"; //julijan pomožna spremenljivka
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean("hasRun", false);
         if (!previouslyStarted) {
+            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
+                final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+                databaseHandler.open();
+                databaseHandler.insertTenDaysTestwater();
+                databaseHandler.close();
+                Log.d("hasrun", "this has not run before");
+
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
             edit.commit();

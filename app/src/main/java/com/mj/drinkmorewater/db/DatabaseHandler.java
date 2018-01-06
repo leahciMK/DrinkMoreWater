@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 
 /**
@@ -213,11 +215,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //method for testing
     public void insertTenDaysTestwater(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date datum = new Date();
+        Random rnd = new Random();
+        int st;
+
         for (int i=0; i<11; i++){
-            Water w = new Water(i*100, "voda", "2017-12-"+Integer.toString(30-i)+" 12:12:12");
+            st = rnd.nextInt((20 - 10) + 1) + 10;
+            Water w = new Water(st*100, "voda", dateFormat.format(datum));
             insertWater(w);
-            Water w2 = new Water(i*100+50*i, "voda", "2017-12-"+Integer.toString(30-i)+" 12:12:12");
-            insertWater(w2);
+            Log.d("testJulijan", datum.toString()+ "---"+ Integer.toString(st*100));
+            datum = subtractDays(datum,1);
         }
     }
 }
