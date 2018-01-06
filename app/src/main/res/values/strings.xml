@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">DrinkWater</string>
     <string name="insert_water">Insert Water</string>
-    <string name="total_water_already_today">Total water already today</string>
-    <string name="total_water_all_today">Total water today</string>
+    <string name="total_water_already_today">Today:</string>
+    <string name="total_water_all_today">Goal:</string>
     <string name="water_amount">Water amount:</string>
     <string name="comment_insert_water">Comment:</string>
-    <string name="btn_insert_water_accept">Accept</string>
+    <string name="btn_insert_water_accept">Save</string>
     <string name="menuitem_settings">Settings</string>
     <string name="no_water_error">Adjust water amount!</string>
     <string name="settings">Settings</string>
@@ -40,8 +40,8 @@
         <item>"5 days"</item>
         <item>"10 days"</item>
     </string-array>
-    <string name="location_text">Your current location: </string>
-    <string name="current_weather_info">Current weather information: </string>
+    <string name="location_text">Your location: </string>
+    <string name="current_weather_info">Current weather: </string>
     <string name="history_menu_5days">5 days</string>
     <string name="history_menu_10days">10 days</string>
     <string name="date">Date</string>

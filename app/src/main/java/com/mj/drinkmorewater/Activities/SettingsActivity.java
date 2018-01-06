@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,6 +18,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -110,7 +114,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         });
 
 
-
+        //setup of nice white title
+        setupTitle();
     }
 
     // Trigger new location updates at interval
@@ -379,8 +384,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             int weight = (int)(Integer.parseInt(scanner.nextLine()));
             seekBarWeight.setProgress(weight);
             checkbox.setChecked(scanner.nextLine().equals("YES"));
-            dailyAmountValue.setText(scanner.nextLine());
-            locationText.setText(scanner.nextLine());
+            dailyAmountValue.setText(scanner.nextLine() + " ml");
+            locationText.setText("Location: " + scanner.nextLine());
             scanner.close();
         }
         catch (IOException e) {
@@ -390,5 +395,12 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             checkbox.setChecked(false);
             dailyAmountValue.setText("");
         }
+    }
+
+    public void setupTitle(){
+        String title = getResources().getString(R.string.settings);
+        SpannableString s = new SpannableString(title);
+        s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(s);
     }
 }

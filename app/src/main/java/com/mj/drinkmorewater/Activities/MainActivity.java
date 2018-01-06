@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     int alreadyAmount=0;
     int totalamount = 0;
 
+    String allwater; //julijan pomožna spremenljivka
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -280,18 +282,18 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         if(cursor.moveToFirst()) {
             int amount=cursor.getInt(0);
-            txtAlreadyWaterPerDay.setText("Total:   "+String.valueOf(amount) +" ml");
+            txtAlreadyWaterPerDay.setText(String.valueOf(amount) +" ml");
             alreadyAmount=amount;
 
         }
 
         CircularProgressBar circularProgressBar = (CircularProgressBar)findViewById(R.id.CircularProgressbar);
-        circularProgressBar.setColor(Color.parseColor("#1525d6"));
-        circularProgressBar.setBackgroundColor(Color.parseColor("#cddfff"));
+        circularProgressBar.setColor(Color.parseColor("#1976D2"));
+        circularProgressBar.setBackgroundColor(Color.parseColor("#BBDEFB"));
         circularProgressBar.setProgressBarWidth(20);
         circularProgressBar.setBackgroundProgressBarWidth(5);
         int animationDuration = 2500; // 2500ms = 2,5s
-        int progress = (int) (alreadyAmount / Double.parseDouble((String) txtAllWaterPerDay.getText()) *100);
+        int progress = (int) (alreadyAmount / Double.parseDouble(allwater) *100);
         Log.d("test",Integer.toString(alreadyAmount));
         Log.d("test",(String) txtAllWaterPerDay.getText());
         Log.d("test",Integer.toString(progress));
@@ -342,7 +344,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         try {
             FileInputStream stream = openFileInput(getAMountLocation);
             Scanner scanner = new Scanner(stream);
-            txtAllWaterPerDay.setText(scanner.nextLine());
+            allwater = scanner.nextLine();
+            txtAllWaterPerDay.setText(allwater + " ml");
 
             String[] separete=scanner.nextLine().split(" ");
             double longitude=Double.parseDouble(separete[0]);
@@ -414,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                                 String desc=object.getString("description");
 
 
-                                weatherInfo += main+"- ";
+                                weatherInfo += main;
                                 weatherInfo += desc;
 
                             }

@@ -36,7 +36,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/water_amount"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="20dp"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:id="@+id/txtMl"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="250 ml"
+            android:textAlignment="center"
+            android:textSize="17dp"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="7dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,14 +66,10 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:progress="5"/>
+                android:progress="5"
+                android:thumb="@drawable/custom_thumb"
+                android:progressTint="@color/colorPrimary"/>
 
-            <TextView
-                android:id="@+id/txtMl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="250 ml" />
         </LinearLayout>
 
         <TextView
@@ -74,7 +87,8 @@
             android:ems="10"
             android:visibility="invisible"
             android:inputType="textPersonName"
-            android:text="" />
+            android:text=""
+            android:background="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +100,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/drink" />
+                android:text="@string/drink"
+                android:textSize="20dp"/>
 
             <Spinner
                 android:id="@+id/drinks_spinner"
@@ -98,6 +113,10 @@
 
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
         <Button
             android:id="@+id/btnInsert"
             android:layout_width="match_parent"
@@ -105,7 +124,8 @@
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_marginTop="20dp"
-            android:text="@string/btn_insert_water_accept" />
+            android:text="@string/btn_insert_water_accept"
+            android:textSize="20dp"/>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

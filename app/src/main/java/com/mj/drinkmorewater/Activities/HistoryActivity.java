@@ -6,11 +6,15 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -22,6 +26,7 @@ import com.mj.drinkmorewater.db.DatabaseHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.mj.drinkmorewater.db.DatabaseHandler.subtractDays;
@@ -49,7 +54,53 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupTitle();
+        setupGraph();
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph.removeAllSeries();
+
+        switch (item.getItemId()) {
+            case R.id.itemFivedays:
+                selected="5 days";
+                setupGraph();
+                return super.onOptionsItemSelected(item);
+
+            case R.id.itemTendays:
+                selected="10 days";
+                setupGraph();
+                return super.onOptionsItemSelected(item);
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
+        getMenuInflater().inflate(R.menu.menu_history, menu);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    public void setupTitle(){
+        Calendar cal = Calendar.getInstance();
+        String mesec = new SimpleDateFormat("MMMM").format(cal.getTime());
+        SpannableString s = new SpannableString(mesec);
+        s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, mesec.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(s);
+    }
+
+    public void setupGraph() {
         final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
         //only for testing
@@ -58,9 +109,9 @@ public class HistoryActivity extends AppCompatActivity {
         Cursor cursor = null;
         switch(selected) {
             case "5 days" :  cursor = databaseHandler.getGroupedSumWaterFiveDays();
-                            break;
+                break;
             case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
-                            break;
+                break;
         }
         cursor.moveToFirst();
 
@@ -84,7 +135,8 @@ public class HistoryActivity extends AppCompatActivity {
         //Graph design
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dt);
         series.setDrawBackground(true);
-        series.setBackgroundColor(Color.argb(84, 10, 10, 230));
+        series.setBackgroundColor(Color.argb(80, 25, 118, 210));
+        series.setColor(Color.rgb(25, 118, 210));
         series.setDrawDataPoints(true);
         series.setDataPointsRadius(8);
 
@@ -107,7 +159,10 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    String myDateStr = new SimpleDateFormat("dd/MM").format(new Date((new Double(value)).longValue()));
+                    String myDateStr = new SimpleDateFormat("dd").format(new Date((new Double(value)).longValue()));
+                    if(myDateStr.substring(0,1).equals("0")){
+                        myDateStr=myDateStr.substring(1);
+                    }
                     return myDateStr;
                 } else {
                     // show ml on y values
@@ -117,7 +172,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
 
-        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 4  labels on x because of the space
+        graph.getGridLabelRenderer().setNumHorizontalLabels(5); // only 5  labels on x because of the space
         graph.getGridLabelRenderer().setHumanRounding(false);
         Date maxX = new Date();
         maxX.setHours(0);       //odrežemo ure in minute, pustimo samo datum da je graf lepši
@@ -136,39 +191,5 @@ public class HistoryActivity extends AppCompatActivity {
         graph.getViewport().setMinX(minX.getTime());
         graph.getViewport().setMaxX(maxX.getTime());
         graph.getViewport().setXAxisBoundsManual(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        graph.removeAllSeries();
-
-        switch (item.getItemId()) {
-            case R.id.itemFivedays:
-                selected="5 days";
-                onResume();
-                return super.onOptionsItemSelected(item);
-
-            case R.id.itemTendays:
-                selected="10 days";
-                onResume();
-                return super.onOptionsItemSelected(item);
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) { //load toolbar
-        getMenuInflater().inflate(R.menu.menu_history, menu);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

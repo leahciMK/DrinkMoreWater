@@ -2,9 +2,13 @@ package com.mj.drinkmorewater.Activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,6 +68,9 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         });
 
         seekBar.setMax(40);
+
+        //setup nice white title
+        setupTitle();
     }
 
     View.OnClickListener saveWaterButtonClicked = new View.OnClickListener() {
@@ -256,4 +263,11 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
             super.onBackPressed();
             finish();
         }
+
+    public void setupTitle(){
+        String title = getResources().getString(R.string.insert_water);
+        SpannableString s = new SpannableString(title);
+        s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(s);
+    }
     }

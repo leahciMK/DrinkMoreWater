@@ -1,9 +1,13 @@
 package com.mj.drinkmorewater.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -44,6 +48,9 @@ public class ViewMyWater extends AppCompatActivity {
 
             }
         });
+
+        //setup nice white title
+        setupTitle();
     }
 
     @Override
@@ -70,5 +77,12 @@ public class ViewMyWater extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    public void setupTitle(){
+        String title = getResources().getString(R.string.view_my_waters);
+        SpannableString s = new SpannableString(title);
+        s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(s);
     }
 }
