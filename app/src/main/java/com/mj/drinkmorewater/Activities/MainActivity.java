@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 7200*1000, AlarmManager.INTERVAL_HOUR * 2, pendingIntent );
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 7200*1000, 7200*1000, pendingIntent ); //every 2 hours
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 

@@ -47,7 +47,11 @@ public class NotificationReciever extends BroadcastReceiver {
         // display toast
         Toast.makeText(context.getApplicationContext(), "Service is running", Toast.LENGTH_SHORT).show();
 
-        if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 7 && currentHour <= 23)) {
+        if(currentHour >= 7 && currentHour > 9) {
+            sendNotificationWakeUp(context);
+        }
+
+        if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 9 && currentHour <= 23)) {
             sendNotification(context);
             Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
@@ -58,13 +62,48 @@ public class NotificationReciever extends BroadcastReceiver {
 
     }
 
+    public void sendNotificationWakeUp(Context context) {
+
+        //Get an instance of NotificationManager//
+
+        Notification n  = new Notification.Builder(context)
+                .setContentTitle("Drink Water!")
+                .setContentText("Good morning, drink more water today!")
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setAutoCancel(true).build();
+
+        n.contentIntent=PendingIntent.getActivity(context, 0,
+                new Intent(context, InsertWater.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
+        // Gets an instance of the NotificationManager service//
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // When you issue multiple notifications about the same type of event,
+        // it’s best practice for your app to try to update an existing notification
+        // with this new information, rather than immediately creating a new notification.
+        // If you want to update this notification at a later date, you need to assign it an ID.
+        // You can then use this ID whenever you issue a subsequent notification.
+        // If the previous notification is still visible, the system will update this existing notification,
+        // rather than create a new one. In this example, the notification’s ID is 001//
+
+
+        mNotificationManager.notify(id, n);
+
+        id++;
+    }
+
+
+
     public void sendNotification(Context context) {
 
         //Get an instance of NotificationManager//
 
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
-                .setContentText("You didn't drink water for 1 hour!")
+                .setContentText("You didn't drink water for 2 hour!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setAutoCancel(true).build();
 
@@ -93,7 +132,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - 3600*1000); //1hour
+        Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000); //1hour
 
 
         try {
