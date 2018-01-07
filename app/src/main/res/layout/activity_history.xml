@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mj.drinkmorewater.Activities.HistoryActivity">
+    tools:context="com.mj.drinkmorewater.Activities.HistoryActivity"
+    android:background="@color/colorLightPrimary">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar2"

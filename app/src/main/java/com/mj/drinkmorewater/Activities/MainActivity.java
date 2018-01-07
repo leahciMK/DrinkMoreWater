@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
 
         if(cityName != "" && weatherInfo != "" && countryName != "") {
-            currentLocation.setText("City: "+cityName + "\n"+"Country: "+countryName);
-            currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + " °C");
+            currentLocation.setText("Location: "+cityName); //I removed countryName
+            currentWeatherInfo.setText( "Temperature: "+currentTemp + " °C"); //I removed weatherInfo line
         }
 
         //requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -296,9 +296,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         CircularProgressBar circularProgressBar = (CircularProgressBar)findViewById(R.id.CircularProgressbar);
         circularProgressBar.setColor(Color.parseColor("#1976D2"));
-        circularProgressBar.setBackgroundColor(Color.parseColor("#BBDEFB"));
-        circularProgressBar.setProgressBarWidth(20);
-        circularProgressBar.setBackgroundProgressBarWidth(5);
+        circularProgressBar.setBackgroundColor(Color.parseColor("#80c4fc"));
+        circularProgressBar.setProgressBarWidth(24);
+        circularProgressBar.setBackgroundProgressBarWidth(4);
         int animationDuration = 2500; // 2500ms = 2,5s
         int progress = (int) (alreadyAmount / Double.parseDouble(allwater) *100);
         Log.d("test",Integer.toString(alreadyAmount));

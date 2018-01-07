@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mj.drinkmorewater.Activities.SettingsActivity"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="81dp"
+    android:background="@color/colorLightPrimary">
 
 <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar2"
