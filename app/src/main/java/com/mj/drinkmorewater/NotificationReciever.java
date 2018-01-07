@@ -39,6 +39,8 @@ public class NotificationReciever extends BroadcastReceiver {
         Cursor cursor = databaseHandler.getLastWaterEntry();
         if(cursor.moveToFirst()) {
             lastWaterEntry = cursor.getString(0);
+        } else {
+
         }
 
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
@@ -47,7 +49,7 @@ public class NotificationReciever extends BroadcastReceiver {
         // display toast
         Toast.makeText(context.getApplicationContext(), "Service is running", Toast.LENGTH_SHORT).show();
 
-        if(currentHour >= 7 && currentHour > 9) {
+        if(currentHour >= 7 && currentHour < 9) {
             sendNotificationWakeUp(context);
         }
 
@@ -103,7 +105,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
-                .setContentText("You didn't drink water for 2 hour!")
+                .setContentText("You didn't drink water for more than 2 hours!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setAutoCancel(true).build();
 

@@ -70,6 +70,7 @@ public class ViewMyWater extends AppCompatActivity {
             //bundle.putInt("_id",arg2);
             viewContact.putExtra("_id",arg3);
             startActivity(viewContact);
+            finish();
         }
     };
 

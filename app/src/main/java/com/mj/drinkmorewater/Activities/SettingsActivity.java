@@ -3,6 +3,7 @@ package com.mj.drinkmorewater.Activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -297,9 +299,19 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         amountWaterPerDay= (seekBarWeight.getProgress() / 30) * 1000;
         if(checkbox.isChecked()) {
             if(seekBarAge.getProgress() > 50) {
-                amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 200;
+                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 205;
+                } else {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 185;
+                }
+
             } else {
-                amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
+                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress() + 350;
+                } else {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
+                }
+
             }
 
         }
@@ -313,10 +325,23 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0 && currentLocation != null) {
                 calculateWaterPerDay();
                 saveData();
+
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
+
             }else{
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Invalid input.", Toast.LENGTH_SHORT);
-                toast.show();
+                if(currentLocation == null) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Please enable GPS.", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Invalid input.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
             }
         }
     };

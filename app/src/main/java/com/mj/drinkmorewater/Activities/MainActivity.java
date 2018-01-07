@@ -80,24 +80,24 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //code if the app HAS run before
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean("hasRun", false);
-        if (!previouslyStarted) {
-            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
-                final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-                databaseHandler.open();
-                databaseHandler.insertTenDaysTestwater();
-                databaseHandler.close();
-                Log.d("hasrun", "this has not run before");
-
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean("hasRun", Boolean.TRUE);
-            edit.commit();
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-
-        }
+//        //code if the app HAS run before
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//        boolean previouslyStarted = prefs.getBoolean("hasRun", false);
+//        if (!previouslyStarted) {
+//            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
+////                final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+////                databaseHandler.open();
+////                databaseHandler.insertTenDaysTestwater();
+////                databaseHandler.close();
+////                Log.d("hasrun", "this has not run before");
+//
+//            SharedPreferences.Editor edit = prefs.edit();
+//            edit.putBoolean("hasRun", Boolean.TRUE);
+//            edit.commit();
+//            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//            startActivity(intent);
+//
+//        }
 
         setContentView(R.layout.activity_main);
         txtAlreadyWaterPerDay = (TextView) findViewById(R.id.txtDataWaterToday);
