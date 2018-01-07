@@ -70,7 +70,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
-                .setContentText("Good morning, drink more water today!")
+                .setContentText("Good morning, remember to drink water today!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setAutoCancel(true).build();
 
