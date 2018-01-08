@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     TextView txtAlreadyWaterPerDay;
     TextView txtAllWaterPerDay;
+    TextView txtTemperatureWarning;
     public TextView currentLocation;
     public TextView currentWeatherInfo;
 
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     GestureDetector gestureDetector;
 
     int alreadyAmount=0;
-    int totalamount = 0;
 
     String allwater = "0"; //julijan pomožna spremenljivka
 
@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         txtAllWaterPerDay = (TextView) findViewById(R.id.txtDataWaterTotalToday);
         currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
         currentWeatherInfo = (TextView) findViewById(R.id.txtWeatherInfo);
+        txtTemperatureWarning = (TextView) findViewById(R.id.temperatureWarning);
 
         //startService(new Intent(MainActivity.this, NotificationService.class));
 
@@ -124,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             showInternetDisabledAlertToUser();
         }
 
-        loadData();
-
         //new JSONParse().execute();
 
         Intent i = getIntent();
@@ -134,7 +133,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         currentTemp=(int) Math.round(i.getDoubleExtra("currentTemp",0));
         countryName=i.getStringExtra("countryName");
 
-        //updateWaterBecauseTemperature(currentTemp);
+        loadData();
+
+        if(currentTemp >=25){
+            txtTemperatureWarning.setText("Stay Hydrated!");
+        }
+
 
         if(cityName != "" && weatherInfo != "" && countryName != "") {
             currentLocation.setText("Location: "+cityName); //I removed countryName
@@ -500,44 +504,5 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             }
         }
     }
-
-//    private void updateWaterBecauseTemperature(int currentTemp) {
-//        //code if the app HAS run before TODAY
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-//        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-//        String previouslyStartedToday = prefs.getString("hasRunToday", "01-01-4000");
-//        Date today = new Date();
-//        String todayString = df.format(today).toString();
-//        if (!previouslyStartedToday.equals(todayString)) {
-//            SharedPreferences.Editor edit = prefs.edit();
-//            edit.putString("hasRunToday", df.format(new Date()).toString());
-//            edit.commit();
-//            Log.d("dela", "prišu sm not");
-//
-//
-//            if(currentTemp>-10) {
-//                try {
-//                    FileInputStream streamIn = openFileInput(getAMountLocation);
-//                    Scanner scanner = new Scanner(streamIn);
-//                    int currentWaterAmount = Integer.parseInt(scanner.nextLine());
-//                    String[] separete=scanner.nextLine().split(" ");
-//                    double longitude=Double.parseDouble(separete[0]);
-//                    double latitude=Double.parseDouble(separete[1]);
-//
-//                    Log.d("dela star", Integer.toString(currentWaterAmount));
-//                    scanner.close();
-//                    if (currentWaterAmount != 0) { //we update the water ammount beacause of the temperature
-//                        FileOutputStream stream = openFileOutput(getAMountLocation, MODE_PRIVATE);
-//                        OutputStreamWriter writer = new OutputStreamWriter(stream);
-//                        writer.write((currentWaterAmount + 500) + System.lineSeparator());
-//                        writer.write(longitude + " "+ latitude +System.lineSeparator());
-//                        writer.close();
-//                    }
-//                } catch (IOException e) {
-//                    Log.d("error", "file not found");
-//                }
-//            }
-//        }
-//    }
 }
 

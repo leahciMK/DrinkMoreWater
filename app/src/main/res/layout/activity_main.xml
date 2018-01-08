@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textAlignment="center"
-                    android:textSize="24dp"
+                    android:textSize="22dp"
                     android:textColor="@color/colorPrimaryText"
                     android:textStyle="bold"/>
 
@@ -181,20 +181,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
 
-                <!--<TextView-->
-                <!--android:id="@+id/txtWeat"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/current_weather_info"-->
-                <!--android:textAlignment="center" />-->
-
                 <TextView
                     android:id="@+id/txtWeatherInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textAlignment="center"
-                    android:textSize="24dp"
+                    android:textSize="22dp"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textStyle="bold"/>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <TextView
+                    android:id="@+id/temperatureWarning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textSize="26dp"
                     android:textColor="@color/colorPrimaryText"
                     android:textStyle="bold"/>
 
