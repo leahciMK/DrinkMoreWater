@@ -58,7 +58,6 @@ public class SplashScreen extends Activity {
         boolean previouslyStarted = prefs.getBoolean("hasRun", false);
         if (!previouslyStarted) {
             Log.d("hasrun", "this has not run before");
-
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
             edit.commit();
@@ -74,6 +73,8 @@ public class SplashScreen extends Activity {
                 public void run() {
                     // This method will be executed once the timer is over
                     // Start your app main activity
+//                    Intent j = new Intent(SplashScreen.this, MainActivity.class);
+//                    startActivity(j);
                     Intent i = new Intent(SplashScreen.this, SettingsActivity.class);
                     startActivity(i);
 
@@ -81,6 +82,12 @@ public class SplashScreen extends Activity {
                     finish();
                 }
             }, SPLASH_TIME_OUT);
+
+            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
+            final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+            databaseHandler.open();
+            databaseHandler.insertTenDaysTestwater();
+            databaseHandler.close();
 
         } else {
             new JSONParse().execute();

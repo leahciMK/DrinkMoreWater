@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mj.drinkmorewater.Activities.InsertWater"
-    tools:layout_editor_absoluteY="81dp"
-    android:background="@color/colorLightPrimary">
+    tools:layout_editor_absoluteY="81dp">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -38,7 +37,8 @@
             android:layout_height="wrap_content"
             android:text="@string/water_amount"
             android:textAlignment="center"
-            android:textSize="20dp"/>
+            android:textSize="25dp"
+            android:textStyle="bold"/>
 
         <Space
             android:layout_width="match_parent"

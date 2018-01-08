@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mj.drinkmorewater.Activities.MainActivity"
-    android:background="@color/colorLightPrimary">
+    tools:context="com.mj.drinkmorewater.Activities.MainActivity">
 
 
     <Space
@@ -174,8 +173,8 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textAlignment="center"
-                    android:textSize="22dp"
-                    android:textColor="@color/white"
+                    android:textSize="24dp"
+                    android:textColor="@color/colorPrimaryText"
                     android:textStyle="bold"/>
 
                 <Space
@@ -195,8 +194,8 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textAlignment="center"
-                    android:textSize="22dp"
-                    android:textColor="@color/white"
+                    android:textSize="24dp"
+                    android:textColor="@color/colorPrimaryText"
                     android:textStyle="bold"/>
 
             </LinearLayout>

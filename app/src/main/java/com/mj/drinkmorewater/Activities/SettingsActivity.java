@@ -296,24 +296,44 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     public void calculateWaterPerDay() {
         DecimalFormat df = new DecimalFormat("#.##");
-        amountWaterPerDay= (seekBarWeight.getProgress() / 30) * 1000;
+        amountWaterPerDay = 2000;
+        int weight = seekBarWeight.getProgress();
+        if(weight > 60){
+            amountWaterPerDay+=200;
+        }
+        if(weight >80){
+            amountWaterPerDay+=300;
+        }
+        if(weight >=100){
+            amountWaterPerDay+=300;
+        }
+        if(weight >=120){
+            amountWaterPerDay+=200;
+        }
+        if(spinnerGender.getSelectedItem().equals("Male")){
+            amountWaterPerDay+=300;
+        }
+        int age = seekBarAge.getProgress();
+        if(age > 20 ){
+            amountWaterPerDay+=200;
+        }
+        if(age > 30 ){
+            amountWaterPerDay+=200;
+        }
+        if(age > 50){
+            amountWaterPerDay+=200;
+        }
+        if(age >=70){
+            amountWaterPerDay+=100;
+        }
         if(checkbox.isChecked()) {
-            if(seekBarAge.getProgress() > 50) {
-                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
-                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 205;
-                } else {
-                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 185;
-                }
-
-            } else {
-                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
-                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress() + 350;
-                } else {
-                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
-                }
-
+            if(weight >= 80){
+                amountWaterPerDay+=700;
+            }else if(weight >=100){
+                amountWaterPerDay+=800;
+            }else{
+                amountWaterPerDay+=500;
             }
-
         }
 
         dailyAmountValue.setText(String.valueOf(df.format(amountWaterPerDay)) +" ml");
@@ -326,9 +346,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 calculateWaterPerDay();
                 saveData();
 
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                //to ne boma klicala ker pride do problema
+//                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
 
 
             }else{
@@ -359,13 +380,21 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //code if the app HAS run before
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean("hasRunSettings", false);
+        if (!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean("hasRunSettings", Boolean.TRUE);
+            edit.commit();
+
+            Intent i = new Intent(SettingsActivity.this, MainActivity.class);
+            startActivity(i);
+        }
         finish();
     }
 
     private void saveData() {
-
-
-
         try {
             FileOutputStream stream = openFileOutput(filename, MODE_PRIVATE);
             OutputStreamWriter writer = new OutputStreamWriter(stream);
@@ -384,7 +413,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             stream=openFileOutput(getAMountLocation,MODE_PRIVATE);
             writer=new OutputStreamWriter(stream);
             writer.write(amountWaterPerDay + System.lineSeparator());
-            writer.write(currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
+            writer.write( currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
             writer.close();
 
 

@@ -39,8 +39,15 @@ import com.mj.drinkmorewater.SplashScreen;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.stream.Stream;
+
 import com.android.volley.RequestQueue;
 
 import org.json.JSONArray;
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     public RequestQueue requestQueue;
     static String cityName="";
     static String weatherInfo="";
-    static double currentTemp=0;
+    static int currentTemp=0;
     static String countryName="";
     static String lastWaterEntry="";
 
@@ -89,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 ////                databaseHandler.open();
 ////                databaseHandler.insertTenDaysTestwater();
 ////                databaseHandler.close();
-////                Log.d("hasrun", "this has not run before");
 //
 //            SharedPreferences.Editor edit = prefs.edit();
 //            edit.putBoolean("hasRun", Boolean.TRUE);
@@ -125,13 +131,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Intent i = getIntent();
         cityName = i.getStringExtra("cityName");
         weatherInfo = i.getStringExtra("weatherInfo");
-        currentTemp=i.getDoubleExtra("currentTemp",0);
+        currentTemp=(int) Math.round(i.getDoubleExtra("currentTemp",0));
         countryName=i.getStringExtra("countryName");
 
+        //updateWaterBecauseTemperature(currentTemp);
 
         if(cityName != "" && weatherInfo != "" && countryName != "") {
             currentLocation.setText("Location: "+cityName); //I removed countryName
-            currentWeatherInfo.setText( "Temperature: "+currentTemp + " °C"); //I removed weatherInfo line
+            currentWeatherInfo.setText( "Temperature: "+currentTemp + "°C"); //I removed weatherInfo line
         }
 
         //requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -430,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                             }
                             JSONObject temperatures=response.getJSONObject("main");
                             if(temperatures.length() > 0) {
-                                currentTemp = temperatures.getDouble("temp");
+                                currentTemp = (int) Math.round(temperatures.getDouble("temp"));
                             }
 
                             JSONObject country=response.getJSONObject("sys");
@@ -472,15 +479,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                                 .show();
                     }
                 });
-
             }
-
-
-
-
             return null;
-
-
         }
         @Override
         protected void onPostExecute(Void result) {
@@ -496,9 +496,48 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             if(cityName != "" && weatherInfo != "" && countryName != "") {
                 currentLocation.setText("City: "+cityName + "\n"+"Country: "+countryName);
-                currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + " °C");
+                currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + "°C");
             }
         }
     }
+
+//    private void updateWaterBecauseTemperature(int currentTemp) {
+//        //code if the app HAS run before TODAY
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+//        String previouslyStartedToday = prefs.getString("hasRunToday", "01-01-4000");
+//        Date today = new Date();
+//        String todayString = df.format(today).toString();
+//        if (!previouslyStartedToday.equals(todayString)) {
+//            SharedPreferences.Editor edit = prefs.edit();
+//            edit.putString("hasRunToday", df.format(new Date()).toString());
+//            edit.commit();
+//            Log.d("dela", "prišu sm not");
+//
+//
+//            if(currentTemp>-10) {
+//                try {
+//                    FileInputStream streamIn = openFileInput(getAMountLocation);
+//                    Scanner scanner = new Scanner(streamIn);
+//                    int currentWaterAmount = Integer.parseInt(scanner.nextLine());
+//                    String[] separete=scanner.nextLine().split(" ");
+//                    double longitude=Double.parseDouble(separete[0]);
+//                    double latitude=Double.parseDouble(separete[1]);
+//
+//                    Log.d("dela star", Integer.toString(currentWaterAmount));
+//                    scanner.close();
+//                    if (currentWaterAmount != 0) { //we update the water ammount beacause of the temperature
+//                        FileOutputStream stream = openFileOutput(getAMountLocation, MODE_PRIVATE);
+//                        OutputStreamWriter writer = new OutputStreamWriter(stream);
+//                        writer.write((currentWaterAmount + 500) + System.lineSeparator());
+//                        writer.write(longitude + " "+ latitude +System.lineSeparator());
+//                        writer.close();
+//                    }
+//                } catch (IOException e) {
+//                    Log.d("error", "file not found");
+//                }
+//            }
+//        }
+//    }
 }
 
