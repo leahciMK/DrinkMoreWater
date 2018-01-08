@@ -84,10 +84,10 @@ public class SplashScreen extends Activity {
             }, SPLASH_TIME_OUT);
 
             //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
-            final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-            databaseHandler.open();
-            databaseHandler.insertTenDaysTestwater();
-            databaseHandler.close();
+//            final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+//            databaseHandler.open();
+//            databaseHandler.insertTenDaysTestwater();
+//            databaseHandler.close();
 
         } else {
             new JSONParse().execute();
@@ -119,7 +119,7 @@ public class SplashScreen extends Activity {
         }
     }
 
-    class JSONParse extends AsyncTask<Void,Void,Void> {
+   public class JSONParse extends AsyncTask<Void,Void,Void> {
 
         @Override
         protected void onPreExecute() {
