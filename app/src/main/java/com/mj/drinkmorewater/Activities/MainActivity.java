@@ -28,50 +28,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.NotificationReciever;
-
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
-import com.mj.drinkmorewater.SplashScreen;
-import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
-import java.util.stream.Stream;
-
 import com.android.volley.RequestQueue;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
     FloatingActionButton floatingActionButton;
     private ProgressDialog pDialog;
-
     TextView txtAlreadyWaterPerDay;
     TextView txtAllWaterPerDay;
     TextView txtTemperatureWarning;
     public TextView currentLocation;
     public TextView currentWeatherInfo;
-
     final public static String getAMountLocation = "amountlocation.txt";
     public static Location location;
-
-    public RequestQueue requestQueue;
     static String cityName = "";
     static String weatherInfo = "";
     static int currentTemp = 0;
     static String countryName = "";
-    static String lastWaterEntry = "";
-
     public AlertDialog alert;
     public boolean isPaused = false;
     GestureDetector gestureDetector;
@@ -95,15 +75,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Intent intent = new Intent(getApplicationContext(), NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 7200 * 1000, 7200 * 1000, pendingIntent); //every 2 hours
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, 7200 * 1000, pendingIntent); //every 2 hours
 
         gestureDetector = new GestureDetector(MainActivity.this, MainActivity.this);
 
-        if (!isNetworkAvailable()) {
-            showInternetDisabledAlertToUser();
-        }
+//        if (!isNetworkAvailable()) {
+//            showInternetDisabledAlertToUser();
+//        }
 
-        //new JSONParse().execute();
 
 
         //  TODO tukaj se potem prebere lokacija pa pokliče
@@ -118,45 +97,44 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
             loadData();
 
-            apicall();
+            currentLocation.setVisibility(View.INVISIBLE);
+            currentWeatherInfo.setVisibility(View.INVISIBLE);
+
 
         } else {
             Intent i = getIntent();
             cityName = i.getStringExtra("cityName");
             weatherInfo = i.getStringExtra("weatherInfo");
-            currentTemp = (int) Math.round(i.getDoubleExtra("currentTemp", 0));
+            currentTemp = (int) Math.round(i.getDoubleExtra("currentTemp", -150));
             countryName = i.getStringExtra("countryName");
 
             loadData();
-        }
 
-
-
-            if (currentTemp >= 25) {
+            if (currentTemp >= 28) {
                 txtTemperatureWarning.setText("Stay Hydrated!");
             }
 
 
-            if (cityName != "" && weatherInfo != "" && countryName != "") {
+            if (!cityName.equals("") && !weatherInfo.equals("") && !countryName.equals("")) {
                 currentLocation.setText("Location: " + cityName); //I removed countryName
                 currentWeatherInfo.setText("Temperature: " + currentTemp + "°C"); //I removed weatherInfo line
             }
+            if(cityName.equals("") || currentTemp == -150) {
+                currentLocation.setVisibility(View.INVISIBLE);
+                currentWeatherInfo.setVisibility(View.INVISIBLE);
+            }
+        }
 
-            //requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-            floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent addNewWater = new Intent(MainActivity.this, InsertWater.class);
-                    startActivity(addNewWater);
-                }
+                    startActivity(addNewWater);}
             });
 
-            if (cityName == "" && weatherInfo == "" && countryName == "") {
-                currentLocation.setText("...");
-                currentWeatherInfo.setText("...");
-            }
+
         }
 
 
@@ -265,91 +243,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         alert.show();
     }
 
-    public void apicall() {
-        HttpHandler sh = new HttpHandler();
-
-        // Making a request to url and getting response
-        String jsonStr="";
-
-        if(location != null) {
-            jsonStr = sh.makeServiceCall("http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric");
-        }
-
-
-        Log.e("", "Response from url: " + jsonStr);
-
-        if (jsonStr != null) {
-            try {
-                JSONObject response = new JSONObject(jsonStr);
-
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-
-                        weatherInfo = "";
-
-
-                        JSONArray weather=response.getJSONArray("weather");
-
-
-                        if (weather.length() > 0) {
-                            JSONObject object=weather.getJSONObject(0);
-
-                            String main=object.getString("main");
-                            String desc=object.getString("description");
-
-
-                            weatherInfo += main+"- ";
-                            weatherInfo += desc;
-
-                        }
-                        JSONObject temperatures=response.getJSONObject("main");
-                        if(temperatures.length() > 0) {
-                            currentTemp = temperatures.getInt("temp");
-
-                        }
-
-                        JSONObject country=response.getJSONObject("sys");
-                        if(country.length() > 0) {
-                            countryName = country.getString("country");
-                        }
-
-                        cityName = response.getString("name");
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                    }
-                }
-
-
-            }catch (final JSONException e) {
-                Log.e("", "Json parsing error: " + e.getMessage());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Json parsing error: " + e.getMessage(),
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
-
-            }
-        }else {
-            Log.e("", "Couldn't get json from server.");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(),
-                            "Couldn't get weather data from server. Check internet connection!",
-                            Toast.LENGTH_LONG)
-                            .show();
-                }
-            });
-
-        }
-    }
 
     @Override
     public void onBackPressed() {

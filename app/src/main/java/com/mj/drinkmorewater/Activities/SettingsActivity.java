@@ -266,10 +266,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     protected void onResume() {
         super.onResume();
 
-
         startLocationUpdates();
         loadData();
-
     }
 
     @Override
@@ -346,12 +344,6 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
                 calculateWaterPerDay();
                 saveData();
 
-                //to ne boma klicala ker pride do problema
-//                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-
-
             }else{
                 if(currentLocation == null) {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -381,17 +373,21 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     public void onBackPressed() {
         super.onBackPressed();
         //code if the app HAS run before
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean("hasRunSettings", false);
-        if (!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean("hasRunSettings", Boolean.TRUE);
-            edit.commit();
 
+        SharedPreferences prefs = getSharedPreferences("isSettingsFirstOpen", MODE_PRIVATE);
+        boolean previouslyStarted = prefs.getBoolean("hasRun", false);
+
+        if (!previouslyStarted) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("hasRun", true);
+            editor.commit(); //
+
+            loadData();
             Intent i = new Intent(SettingsActivity.this, MainActivity.class);
             startActivity(i);
+            finish();
         }
-        finish();
+
     }
 
     private void saveData() {

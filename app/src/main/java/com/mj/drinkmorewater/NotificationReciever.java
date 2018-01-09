@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
@@ -51,7 +52,7 @@ public class NotificationReciever extends BroadcastReceiver {
             // display toast
             Toast.makeText(context.getApplicationContext(), "Service is running", Toast.LENGTH_SHORT).show();
 
-            if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 9 && currentHour <= 23)) {
+            if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 10 && currentHour <= 22)) {
                 sendNotification(context);
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
@@ -76,6 +77,7 @@ public class NotificationReciever extends BroadcastReceiver {
                 .setContentTitle("Drink Water!")
                 .setContentText("You didn't drink any water yet!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
+                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -109,7 +111,9 @@ public class NotificationReciever extends BroadcastReceiver {
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
                 .setContentText("Good morning, remember to drink water today!")
+                .setStyle(new Notification.BigTextStyle().bigText("Good morning, remember to drink water today!"))
                 .setSmallIcon(R.drawable.ic_notification_icon)
+                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -144,7 +148,9 @@ public class NotificationReciever extends BroadcastReceiver {
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
                 .setContentText("You didn't drink water for more than 2 hours!")
+                .setStyle(new Notification.BigTextStyle().bigText("You didn't drink water for more than 2 hours!"))
                 .setSmallIcon(R.drawable.ic_notification_icon)
+                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -192,4 +198,6 @@ public class NotificationReciever extends BroadcastReceiver {
 
         return false;
     }
+
+
 }
