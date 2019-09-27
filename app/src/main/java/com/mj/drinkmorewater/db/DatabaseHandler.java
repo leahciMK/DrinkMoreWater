@@ -26,6 +26,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private SQLiteDatabase database;
 
+    /*
+        @TODO
+        rewrite Date to new java8 -> localdate etc...
+        and replace variables names to appropriate one! -> old "rookie" mistakes
+     */
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -38,14 +44,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(createQuery);
     }
 
-    /*CREATE TABLE water (
-            _id     INTEGER PRIMARY KEY AUTOINCREMENT
-            UNIQUE
-            NOT NULL,
-            date    LONG    NOT NULL,
-            amount  INTEGER NOT NULL,
-            comment TEXT
-    ); */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }

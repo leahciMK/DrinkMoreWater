@@ -3,6 +3,7 @@ package com.mj.drinkmorewater.db;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,6 +36,8 @@ public class Water implements WaterEntry {
     @Override
     public String getCurrentDate() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.now();
+
         Date currentDate=new Date(System.currentTimeMillis());
         return df.format(currentDate);
     }
@@ -47,9 +50,6 @@ public class Water implements WaterEntry {
         return df.format(currentDate);
 
     }
-
-
-
 
     @Override
     public String getDateToString() {

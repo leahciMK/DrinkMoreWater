@@ -11,14 +11,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.Activities.InsertWater;
-import com.mj.drinkmorewater.Activities.MainActivity;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 
 import java.text.DateFormat;
@@ -32,6 +29,11 @@ public class NotificationReciever extends BroadcastReceiver {
 
     int id=1;
     private String lastWaterEntry="";
+
+    /*
+        @TODO
+        rewrite Date to java8 LocalDate etc...
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -73,7 +75,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
-                .setContentText("You don't drink any water yet!")
+                .setContentText("You didn't drink any water yet!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setAutoCancel(true).build();
 
@@ -171,7 +173,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000); //2hours
+        Date minustwoHours=new Date(System.currentTimeMillis() - DateUtils.TWO_HOURS_IN_MILIS); //2hours
 
 
         try {
