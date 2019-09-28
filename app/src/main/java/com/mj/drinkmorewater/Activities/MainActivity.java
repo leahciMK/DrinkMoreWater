@@ -32,6 +32,7 @@ import com.mj.drinkmorewater.NotificationReciever;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
@@ -56,57 +57,34 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     final public static String getAMountLocation="amountlocation.txt";
     public static Location location;
-
-    public RequestQueue requestQueue;
     static String cityName="";
     static String weatherInfo="";
     static double currentTemp=0;
     static String countryName="";
-    static String lastWaterEntry="";
 
     public AlertDialog alert;
     public boolean isPaused=false;
     GestureDetector gestureDetector;
 
     int alreadyAmount=0;
-    int totalamount = 0;
 
     String allwater = "0"; //julijan pomožna spremenljivka
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        //code if the app HAS run before
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-//        boolean previouslyStarted = prefs.getBoolean("hasRun", false);
-//        if (!previouslyStarted) {
-//            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
-////                final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-////                databaseHandler.open();
-////                databaseHandler.insertTenDaysTestwater();
-////                databaseHandler.close();
-////                Log.d("hasrun", "this has not run before");
-//
-//            SharedPreferences.Editor edit = prefs.edit();
-//            edit.putBoolean("hasRun", Boolean.TRUE);
-//            edit.commit();
-//            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-//            startActivity(intent);
-//
-//        }
-
         setContentView(R.layout.activity_main);
-        txtAlreadyWaterPerDay = (TextView) findViewById(R.id.txtDataWaterToday);
-        txtAllWaterPerDay = (TextView) findViewById(R.id.txtDataWaterTotalToday);
-        currentLocation = (TextView) findViewById(R.id.txtCurrentLocation);
-        currentWeatherInfo = (TextView) findViewById(R.id.txtWeatherInfo);
+
+
+        txtAlreadyWaterPerDay = findViewById(R.id.txtDataWaterToday);
+        txtAllWaterPerDay = findViewById(R.id.txtDataWaterTotalToday);
 
         //startService(new Intent(MainActivity.this, NotificationService.class));
 
         Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 7200*1000, 7200*1000, pendingIntent ); //every 2 hours
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + DateUtils.TWO_HOURS_IN_MILIS, DateUtils.TWO_HOURS_IN_MILIS, pendingIntent ); //every 2 hours
 
         gestureDetector=new GestureDetector(MainActivity.this,MainActivity.this);
 
@@ -116,19 +94,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         loadData();
 
-        //new JSONParse().execute();
-
         Intent i = getIntent();
         cityName = i.getStringExtra("cityName");
         weatherInfo = i.getStringExtra("weatherInfo");
         currentTemp=i.getDoubleExtra("currentTemp",0);
         countryName=i.getStringExtra("countryName");
 
-
-        if(cityName != "" && weatherInfo != "" && countryName != "") {
-            currentLocation.setText("Location: "+cityName); //I removed countryName
-            currentWeatherInfo.setText( "Temperature: "+currentTemp + " °C"); //I removed weatherInfo line
-        }
 
         //requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -140,11 +111,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 startActivity(addNewWater);
             }
         });
-
-        if (cityName == "" && weatherInfo == "" && countryName == "") {
-            currentLocation.setText("...");
-            currentWeatherInfo.setText("...");
-        }
     }
 
     //Gesture Methods
@@ -290,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         }
 
-        CircularProgressBar circularProgressBar = (CircularProgressBar)findViewById(R.id.CircularProgressbar);
+        CircularProgressBar circularProgressBar = findViewById(R.id.CircularProgressbar);
         circularProgressBar.setColor(Color.parseColor("#1976D2"));
         circularProgressBar.setBackgroundColor(Color.parseColor("#80c4fc"));
         circularProgressBar.setProgressBarWidth(24);
@@ -365,136 +331,5 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
     }
 
-
-    class JSONParse extends AsyncTask<Void,Void,Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            if(!isPaused) {
-                pDialog = new ProgressDialog(MainActivity.this);
-                pDialog.setMessage("Please wait...");
-                pDialog.setCancelable(false);
-                pDialog.show();
-
-                //show image at the start of activity
-            }
-
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-
-
-            HttpHandler sh = new HttpHandler();
-
-            // Making a request to url and getting response
-            String jsonStr="";
-
-            if(location != null) {
-                jsonStr = sh.makeServiceCall("http://api.openweathermap.org/data/2.5/weather?lat="+location.getLatitude()+"&lon="+location.getLongitude()+"&appid=37783e3aee7050d7c1e9441f395f41bd&units=metric");
-            }
-
-
-            Log.e("", "Response from url: " + jsonStr);
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject response = new JSONObject(jsonStr);
-
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
-
-                            weatherInfo = "";
-
-
-                            JSONArray weather=response.getJSONArray("weather");
-
-
-                            if (weather.length() > 0) {
-                                JSONObject object=weather.getJSONObject(0);
-
-                                String main=object.getString("main");
-                                String desc=object.getString("description");
-
-
-                                weatherInfo += main;
-                                weatherInfo += desc;
-
-                            }
-                            JSONObject temperatures=response.getJSONObject("main");
-                            if(temperatures.length() > 0) {
-                                currentTemp = temperatures.getDouble("temp");
-                            }
-
-                            JSONObject country=response.getJSONObject("sys");
-                            if(country.length() > 0) {
-                                countryName = country.getString("country");
-                            }
-
-                            cityName = response.getString("name");
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-
-                        }
-                    }
-
-
-                }catch (final JSONException e) {
-                    Log.e("", "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
-                                    Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    });
-
-                }
-            }else {
-                Log.e("", "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Couldn't get weather data from server. Check internet connection!",
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
-
-            }
-
-
-
-
-            return null;
-
-
-        }
-        @Override
-        protected void onPostExecute(Void result) {
-
-            super.onPostExecute(result);
-
-//            Intent i = new Intent(MainActivity.this, SplashScreen.class);
-//            startActivity(i);
-
-            // Dismiss the progress dialog
-            if (pDialog.isShowing())
-                pDialog.dismiss();
-
-            if(cityName != "" && weatherInfo != "" && countryName != "") {
-                currentLocation.setText("City: "+cityName + "\n"+"Country: "+countryName);
-                currentWeatherInfo.setText(weatherInfo +"\n" + "Temperature: "+currentTemp + " °C");
-            }
-        }
-    }
 }
 

@@ -147,60 +147,6 @@
 
             </LinearLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="70dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="30dp"
-                android:orientation="vertical">
-
-                <!--<TextView-->
-                <!--android:id="@+id/txtLoc"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/location_text"-->
-                <!--android:textAlignment="center" />-->
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp" />
-
-
-                <TextView
-                    android:id="@+id/txtCurrentLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textSize="22dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"/>
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp" />
-
-                <!--<TextView-->
-                <!--android:id="@+id/txtWeat"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/current_weather_info"-->
-                <!--android:textAlignment="center" />-->
-
-                <TextView
-                    android:id="@+id/txtWeatherInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAlignment="center"
-                    android:textSize="22dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
