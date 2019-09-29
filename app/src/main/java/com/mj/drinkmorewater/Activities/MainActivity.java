@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         txtAlreadyWaterPerDay = findViewById(R.id.txtDataWaterToday);
         txtAllWaterPerDay = findViewById(R.id.txtDataWaterTotalToday);
 
-        //startService(new Intent(MainActivity.this, NotificationService.class));
 
         Intent intent = new Intent(getApplicationContext(),NotificationReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -100,9 +99,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         currentTemp=i.getDoubleExtra("currentTemp",0);
         countryName=i.getStringExtra("countryName");
 
-
-        //requestQueue = Volley.newRequestQueue(getApplicationContext());
-
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,16 +110,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     }
 
     //Gesture Methods
-
-
-
     @Override
     public boolean onFling(MotionEvent motionEvent1, MotionEvent motionEvent2, float X, float Y) {
 
 
         if(motionEvent1.getX() - motionEvent2.getX() > 50){
-
-            //Toast.makeText(MainActivity.this , " Swipe Left " , Toast.LENGTH_LONG).show();
             Intent intent=new Intent(MainActivity.this,InsertWater.class);
             startActivity(intent);
             this.gestureDetector=null;
@@ -131,16 +122,13 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
 
         if(motionEvent2.getX() - motionEvent1.getX() > 50) {
-
-            //Toast.makeText(MainActivity.this, " Swipe Right ", Toast.LENGTH_LONG).show();
             Intent intent=new Intent(MainActivity.this,InsertWater.class);
             startActivity(intent);
             this.gestureDetector=null;
             return true;
         }
         else {
-
-            return true ;
+            return true;
         }
     }
 
@@ -190,10 +178,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         return false;
     }
 
-
-
-
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -231,9 +215,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     protected void onPause() {
         super.onPause();
         isPaused=true;
-        //new JSONParse().execute();
-
-
     }
 
     @Override
@@ -284,21 +265,15 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             case R.id.Settings:
                 Intent intent=new Intent(MainActivity.this,SettingsActivity.class);
                 startActivity(intent);
-
                 return super.onOptionsItemSelected(item);
-
 
             case R.id.History:
                 Intent intentHistory=new Intent(MainActivity.this,HistoryActivity.class);
                 startActivity(intentHistory);
-
                 return super.onOptionsItemSelected(item);
-
 
             default:
                 return super.onOptionsItemSelected(item);
-
-
         }
 
     }

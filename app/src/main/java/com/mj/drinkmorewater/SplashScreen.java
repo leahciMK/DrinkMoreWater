@@ -32,7 +32,7 @@ import java.util.Scanner;
 
 public class SplashScreen extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 2000; // 2 sec
+    private static int SPLASH_TIME_OUT = 3000; // 2 sec
     static String cityName="";
     static String weatherInfo="";
     static double currentTemp=0;
@@ -41,10 +41,6 @@ public class SplashScreen extends Activity {
     final public static String getAMountLocation="amountlocation.txt";
 
     /*
-
-
-        TODO
-        there would be async task...
         https://www.androidhive.info/2013/07/how-to-implement-android-splash-screen-2/
      */
 
@@ -58,7 +54,6 @@ public class SplashScreen extends Activity {
         boolean previouslyStarted = prefs.getBoolean("hasRun", false);
         if (!previouslyStarted) {
             Log.d("hasrun", "this has not run before");
-
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
             edit.commit();
@@ -73,7 +68,6 @@ public class SplashScreen extends Activity {
                 @Override
                 public void run() {
                     // This method will be executed once the timer is over
-                    // Start your app main activity
                     Intent i = new Intent(SplashScreen.this, SettingsActivity.class);
                     startActivity(i);
 
@@ -82,8 +76,37 @@ public class SplashScreen extends Activity {
                 }
             }, SPLASH_TIME_OUT);
 
+            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
+//            final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
+//            databaseHandler.open();
+//            databaseHandler.insertTenDaysTestwater();
+//            databaseHandler.close();
+
         } else {
             new JSONParse().execute();
+
+            new Handler().postDelayed(new Runnable() {
+
+            /*
+             * Showing splash screen with a timer. This will be useful when you
+             * want to show case your app logo / company
+             */
+
+                @Override
+                public void run() {
+                    // This method will be executed once the timer is over
+                    // Start your app main activity
+                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                    i.putExtra("cityName", cityName);
+                    i.putExtra("weatherInfo",weatherInfo);
+                    i.putExtra("currentTemp",currentTemp);
+                    i.putExtra("countryName",countryName);
+                    startActivity(i);
+
+                    // close this activity
+                    finish();
+                }
+            }, SPLASH_TIME_OUT);
         }
 
 
@@ -112,7 +135,7 @@ public class SplashScreen extends Activity {
         }
     }
 
-    class JSONParse extends AsyncTask<Void,Void,Void> {
+   public class JSONParse extends AsyncTask<Void,Void,Void> {
 
         @Override
         protected void onPreExecute() {
@@ -220,40 +243,6 @@ public class SplashScreen extends Activity {
         protected void onPostExecute(Void result) {
 
             super.onPostExecute(result);
-
-//            Intent i = new Intent(MainActivity.this, SplashScreen.class);
-//            startActivity(i);
-
-//            static String cityName="";
-//            static String weatherInfo="";
-//            static double currentTemp=0;
-//            static String countryName="";
-//            public static Location location;
-
-            new Handler().postDelayed(new Runnable() {
-
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
-                @Override
-                public void run() {
-                    // This method will be executed once the timer is over
-                    // Start your app main activity
-                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
-                    i.putExtra("cityName", cityName);
-                    i.putExtra("weatherInfo",weatherInfo);
-                    i.putExtra("currentTemp",currentTemp);
-                    i.putExtra("countryName",countryName);
-                    startActivity(i);
-
-                    // close this activity
-                    finish();
-                }
-            }, SPLASH_TIME_OUT);
-
-
 
         }
     }
