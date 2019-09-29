@@ -11,15 +11,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.mj.drinkmorewater.Activities.InsertWater;
-import com.mj.drinkmorewater.Activities.MainActivity;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 
 import java.text.DateFormat;
@@ -33,26 +29,30 @@ public class NotificationReciever extends BroadcastReceiver {
 
     int id=1;
     private String lastWaterEntry="";
+
+    /*
+        @TODO
+        rewrite Date to java8 LocalDate etc...
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
-        //return currentHour < 18 //False if after 6pm
-
-        if(currentHour >= 7 && currentHour < 9) {
-            sendNotificationWakeUp(context);
-        }
-
 
         DatabaseHandler databaseHandler = new DatabaseHandler(context.getApplicationContext());
         Cursor cursor = databaseHandler.getLastWaterEntry();
         if(cursor.moveToFirst()) {
             lastWaterEntry = cursor.getString(0);
 
+            int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
+            //return currentHour < 18 //False if after 6pm
+
+            if(currentHour >= 7 && currentHour < 9) {
+                sendNotificationWakeUp(context);
+            }
+
             // display toast
             Toast.makeText(context.getApplicationContext(), "Service is running", Toast.LENGTH_SHORT).show();
 
-            if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 10 && currentHour <= 22)) {
+            if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 9 && currentHour <= 23)) {
                 sendNotification(context);
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
@@ -77,7 +77,6 @@ public class NotificationReciever extends BroadcastReceiver {
                 .setContentTitle("Drink Water!")
                 .setContentText("You didn't drink any water yet!")
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -111,9 +110,7 @@ public class NotificationReciever extends BroadcastReceiver {
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
                 .setContentText("Good morning, remember to drink water today!")
-                .setStyle(new Notification.BigTextStyle().bigText("Good morning, remember to drink water today!"))
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -148,9 +145,7 @@ public class NotificationReciever extends BroadcastReceiver {
         Notification n  = new Notification.Builder(context)
                 .setContentTitle("Drink Water!")
                 .setContentText("You didn't drink water for more than 2 hours!")
-                .setStyle(new Notification.BigTextStyle().bigText("You didn't drink water for more than 2 hours!"))
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setColor(Color.BLUE)
                 .setAutoCancel(true).build();
 
         n.contentIntent=PendingIntent.getActivity(context, 0,
@@ -178,7 +173,7 @@ public class NotificationReciever extends BroadcastReceiver {
 
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - 7200*1000); //2hours
+        Date minustwoHours=new Date(System.currentTimeMillis() - DateUtils.TWO_HOURS_IN_MILIS); //2hours
 
 
         try {
@@ -198,6 +193,4 @@ public class NotificationReciever extends BroadcastReceiver {
 
         return false;
     }
-
-
 }

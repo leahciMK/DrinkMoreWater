@@ -10,6 +10,4 @@ public interface WaterEntry {
     String getCurrentDate();
     String getCurrentDateToString();
     String getDateToString();
-
-
 }

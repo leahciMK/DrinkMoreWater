@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mj.drinkmorewater.Activities.ViewMyWater">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar3"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -14,7 +14,7 @@
         android:clipChildren="true"
         android:theme="@style/AppTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
     <LinearLayout
@@ -35,8 +35,9 @@
                 android:text="@string/date"
                 android:textColor="@color/colorPrimaryText"
                 android:textStyle="bold"
-                android:paddingLeft="15dp"
-                android:textSize="20dp"/>
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/amountTextView1"
@@ -47,7 +48,7 @@
                 android:text="@string/Amount"
                 android:textColor="@color/colorPrimaryText"
                 android:textStyle="bold"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/commentTextView1"
@@ -58,13 +59,12 @@
                 android:text="@string/Type"
                 android:textColor="@color/colorPrimaryText"
                 android:textStyle="bold"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
-
-
-        <android.support.v7.widget.ListViewCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        <ListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/listViewWater"
             android:layout_width="match_parent"
@@ -74,11 +74,8 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:listSelector="@color/colorPrimary">
-
-
-        </android.support.v7.widget.ListViewCompat>
+            android:listSelector="@color/colorPrimary" />
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
