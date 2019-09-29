@@ -34,6 +34,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.api.HttpHandler;
+import com.mj.drinkmorewater.components.resources.CoreResourceBundle;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,12 +49,12 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
     FloatingActionButton floatingActionButton;
-    private ProgressDialog pDialog;
 
     TextView txtAlreadyWaterPerDay;
     TextView txtAllWaterPerDay;
-    public TextView currentLocation;
-    public TextView currentWeatherInfo;
+    GestureDetector gestureDetector;
+    public AlertDialog alert;
+
 
     final public static String getAMountLocation="amountlocation.txt";
     public static Location location;
@@ -61,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     static String weatherInfo="";
     static double currentTemp=0;
     static String countryName="";
-
-    public AlertDialog alert;
     public boolean isPaused=false;
-    GestureDetector gestureDetector;
+
 
     int alreadyAmount=0;
 
-    String allwater = "0"; //julijan pomožna spremenljivka
+    String allwater = "0";
+
+    private CoreResourceBundle coreResourceBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private void showInternetDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Internet is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage(coreResourceBundle.getMessage("disabled_internet"))
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable Internet",
+                .setPositiveButton(coreResourceBundle.getMessage("disabled_internet_instructions"),
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int id){
                                 Intent callGPSSettingIntent = new Intent(

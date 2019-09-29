@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Looper;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,17 +25,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.components.SettingsAnswerType;
+import com.mj.drinkmorewater.components.resources.CoreResourceBundle;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -69,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private long UPDATE_INTERVAL = 1000 * 1000;  /* 1000 secs */
     private long FASTEST_INTERVAL = 200000; /* 200 sec */
+
+    private CoreResourceBundle coreResourceBundle;
 
 
     @Override
@@ -121,19 +119,19 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         if (permLocationCoarse != PackageManager.PERMISSION_GRANTED
                 || permLocationFine != PackageManager.PERMISSION_GRANTED || permInternet != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
-                    this, // Aktivnost, ki zahteva pravice.
-                    new String[]{ // Tabela zahtevanih pravic.
+                    this,
+                    new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.INTERNET
                     },
-                    100 // Poljubna koda zahtevka, tipa int.
+                    100
             );
         } else {
 
             // Create the location request to start receiving updates
             mLocationRequest = new LocationRequest();
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             mLocationRequest.setInterval(UPDATE_INTERVAL);
             mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
@@ -164,7 +162,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     }
 
     public void onLocationChanged(Location location) {
-        currentLocation=location;
+        currentLocation = location;
     }
 
 
@@ -191,9 +189,9 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+        alertDialogBuilder.setMessage(coreResourceBundle.getMessage("disabled_gps"))
                 .setCancelable(false)
-                .setPositiveButton("Goto Settings Page To Enable GPS",
+                .setPositiveButton(coreResourceBundle.getMessage("disabled_gps_instructions"),
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface dialog, int id){
                                 Intent callGPSSettingIntent = new Intent(
@@ -217,10 +215,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     protected void onResume() {
         super.onResume();
 
-
         startLocationUpdates();
         loadData();
-
     }
 
     @Override
@@ -267,7 +263,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
         }
 
-        dailyAmountValue.setText(String.valueOf(df.format(amountWaterPerDay)) +" ml");
+        dailyAmountValue.setText(String.format("%s ml", df.format(amountWaterPerDay)));
     }
 
     View.OnClickListener saveSettings = new View.OnClickListener() {
@@ -285,7 +281,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             }else{
                 if(currentLocation == null) {
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "Please enable GPS.", Toast.LENGTH_SHORT);
+                            coreResourceBundle.getMessage("disabled_gps_instructions"), Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(),
@@ -322,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             int weight = (int)seekBarWeight.getProgress();
             writer.write(Integer.toString(age) + System.lineSeparator());
             writer.write(Integer.toString(weight) + System.lineSeparator());
-            writer.write(checkbox.isChecked() ? "YES" : "NO");
+            writer.write(checkbox.isChecked() ? SettingsAnswerType.YES.name() : SettingsAnswerType.NO.name());
             writer.write(System.lineSeparator());
             writer.write(amountWaterPerDay + System.lineSeparator());
             writer.write(currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
@@ -337,13 +333,13 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
 
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Data saved", Toast.LENGTH_SHORT);
+                    coreResourceBundle.getMessage("saving_data_success"), Toast.LENGTH_SHORT);
             toast.show();
 
         }
         catch (IOException e) {
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Saving data failed", Toast.LENGTH_SHORT);
+                    coreResourceBundle.getMessage("saving_failed_failed"), Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -352,20 +348,25 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         try {
             FileInputStream stream = openFileInput(filename);
             Scanner scanner = new Scanner(stream);
-            if (scanner.nextLine().equals("Male"))
+            if (scanner.nextLine().equals("Male")) {
                 spinnerGender.setSelection(0);
-            else
+            }
+
+            else {
                 spinnerGender.setSelection(1);
-            int age = (int)(Integer.parseInt(scanner.nextLine()));
+            }
+
+            int age = Integer.parseInt(scanner.nextLine());
             seekBarAge.setProgress(age);
-            int weight = (int)(Integer.parseInt(scanner.nextLine()));
+
+            int weight = Integer.parseInt(scanner.nextLine());
             seekBarWeight.setProgress(weight);
+
             checkbox.setChecked(scanner.nextLine().equals("YES"));
-            dailyAmountValue.setText(scanner.nextLine() + " ml");
-            locationText.setText("Location: " + scanner.nextLine());
+            dailyAmountValue.setText(String.format("%s ml", scanner.nextLine()));
+            locationText.setText(String.format("Location: %s", scanner.nextLine()));
             scanner.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             spinnerGender.setSelection(0);
             seekBarAge.setProgress(0);
             seekBarWeight.setProgress(0);
