@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.mj.drinkmorewater.Activities.MainActivity;
 import com.mj.drinkmorewater.Activities.SettingsActivity;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 
@@ -32,17 +33,13 @@ import java.util.Scanner;
 
 public class SplashScreen extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000; // 2 sec
+    private static int SPLASH_TIME_OUT = DateUtils.TWO_SECONDS; // 2 sec
     static String cityName="";
     static String weatherInfo="";
     static double currentTemp=0;
     static String countryName="";
     public static Location location;
     final public static String getAMountLocation="amountlocation.txt";
-
-    /*
-        https://www.androidhive.info/2013/07/how-to-implement-android-splash-screen-2/
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,36 +51,10 @@ public class SplashScreen extends Activity {
         boolean previouslyStarted = prefs.getBoolean("hasRun", false);
         if (!previouslyStarted) {
             Log.d("hasrun", "this has not run before");
+
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
-            edit.commit();
-
-            new Handler().postDelayed(new Runnable() {
-
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
-                @Override
-                public void run() {
-                    // This method will be executed once the timer is over
-                    Intent i = new Intent(SplashScreen.this, SettingsActivity.class);
-                    startActivity(i);
-
-                    // close this activity
-                    finish();
-                }
-            }, SPLASH_TIME_OUT);
-
-            //Only to insert some DUMMY water inputs REMOVE THIS IN FINAL VERSION TODO
-//            final DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
-//            databaseHandler.open();
-//            databaseHandler.insertTenDaysTestwater();
-//            databaseHandler.close();
-
-        } else {
-            new JSONParse().execute();
+            edit.apply();
 
             new Handler().postDelayed(new Runnable() {
 
@@ -96,22 +67,17 @@ public class SplashScreen extends Activity {
                 public void run() {
                     // This method will be executed once the timer is over
                     // Start your app main activity
-                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
-                    i.putExtra("cityName", cityName);
-                    i.putExtra("weatherInfo",weatherInfo);
-                    i.putExtra("currentTemp",currentTemp);
-                    i.putExtra("countryName",countryName);
+                    Intent i = new Intent(SplashScreen.this, SettingsActivity.class);
                     startActivity(i);
 
                     // close this activity
                     finish();
                 }
             }, SPLASH_TIME_OUT);
+
+        } else {
+            new JSONParse().execute();
         }
-
-
-
-        //new JSONParse().execute();
     }
 
     public void loadData() {
@@ -135,7 +101,7 @@ public class SplashScreen extends Activity {
         }
     }
 
-   public class JSONParse extends AsyncTask<Void,Void,Void> {
+    class JSONParse extends AsyncTask<Void,Void,Void> {
 
         @Override
         protected void onPreExecute() {
@@ -244,6 +210,28 @@ public class SplashScreen extends Activity {
 
             super.onPostExecute(result);
 
+            new Handler().postDelayed(new Runnable() {
+
+            /*
+             * Showing splash screen with a timer. This will be useful when you
+             * want to show case your app logo / company
+             */
+
+                @Override
+                public void run() {
+                    // This method will be executed once the timer is over
+                    // Start your app main activity
+                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                    i.putExtra("cityName", cityName);
+                    i.putExtra("weatherInfo",weatherInfo);
+                    i.putExtra("currentTemp",currentTemp);
+                    i.putExtra("countryName",countryName);
+                    startActivity(i);
+
+                    // close this activity
+                    finish();
+                }
+            }, SPLASH_TIME_OUT);
         }
     }
 }

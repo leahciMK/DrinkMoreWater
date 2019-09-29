@@ -163,65 +163,25 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     }
 
-
-
-
-    public void getLastLocation() {
-        // Get last known recent location using new Google Play Services SDK (v11+)
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
-
-        locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // GPS location can be null if GPS is switched off
-                        if (location != null) {
-                            onLocationChanged(location);
-
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
-                });
-    }
-
     public void onLocationChanged(Location location) {
-        // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
         currentLocation=location;
-
-        //locationText.setText(latLng.toString());
     }
 
 
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, // koda zahtevka
-            String permissions[], // tabela zahtevanih pravic
-            int[] grantResults) // tabela odobritev
-    {
-        if (requestCode == 100) { // Če je št. zahtevka enaka 100.
+            int requestCode,
+            String permissions[],
+            int[] grantResults) {
+        if (requestCode == 100) {
             if (grantResults.length > 0) {
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Prva pravica je bila odobrena.
 
                 }
-                if(grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    //druga bila odobrena
+                if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 }
-                if(grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[2] == PackageManager.PERMISSION_GRANTED) {
 
                 }
 
@@ -257,8 +217,10 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     protected void onResume() {
         super.onResume();
 
+
         startLocationUpdates();
         loadData();
+
     }
 
     @Override
@@ -266,18 +228,18 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         switch (seekBar.getId()) {
             case R.id.age_seekBar:
                 if(seekBarAge.getProgress() == 100) {
-                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + "+ y");
+                    ageText.setText(String.format("%s + y", seekBar.getProgress()));
                 }else{
-                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + " y");
+                    ageText.setText(String.format("%s y", seekBar.getProgress()));
 
                 }
                 break;
 
             case R.id.weight_seekBar:
                 if(seekBarWeight.getProgress() == 150){
-                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + "+ kg");
+                    weightText.setText(String.format("%s +kg", seekBarWeight.getProgress()));
                 }else {
-                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + " kg");
+                    weightText.setText(String.format("%s kg", seekBarWeight.getProgress()));
                 }
                 break;
         }
@@ -285,44 +247,24 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     public void calculateWaterPerDay() {
         DecimalFormat df = new DecimalFormat("#.##");
-        amountWaterPerDay = 2000;
-        int weight = seekBarWeight.getProgress();
-        if(weight > 60){
-            amountWaterPerDay+=200;
-        }
-        if(weight >80){
-            amountWaterPerDay+=300;
-        }
-        if(weight >=100){
-            amountWaterPerDay+=300;
-        }
-        if(weight >=120){
-            amountWaterPerDay+=200;
-        }
-        if(spinnerGender.getSelectedItem().equals("Male")){
-            amountWaterPerDay+=300;
-        }
-        int age = seekBarAge.getProgress();
-        if(age > 20 ){
-            amountWaterPerDay+=200;
-        }
-        if(age > 30 ){
-            amountWaterPerDay+=200;
-        }
-        if(age > 50){
-            amountWaterPerDay+=200;
-        }
-        if(age >=70){
-            amountWaterPerDay+=100;
-        }
+        amountWaterPerDay= (seekBarWeight.getProgress() / 30) * 1000;
         if(checkbox.isChecked()) {
-            if(weight >= 80){
-                amountWaterPerDay+=700;
-            }else if(weight >=100){
-                amountWaterPerDay+=800;
-            }else{
-                amountWaterPerDay+=500;
+            if(seekBarAge.getProgress() > 50) {
+                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 205;
+                } else {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * 185;
+                }
+
+            } else {
+                if(spinnerGender.getSelectedItem().toString().equals("Male")) {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress() + 350;
+                } else {
+                    amountWaterPerDay += (seekBarWeight.getProgress() / 10) * seekBarAge.getProgress();
+                }
+
             }
+
         }
 
         dailyAmountValue.setText(String.valueOf(df.format(amountWaterPerDay)) +" ml");
@@ -334,6 +276,11 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             if(seekBarAge.getProgress() != 0 && seekBarWeight.getProgress() != 0 && currentLocation != null) {
                 calculateWaterPerDay();
                 saveData();
+
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
 
             }else{
                 if(currentLocation == null) {
@@ -363,22 +310,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //code if the app HAS run before
-
-        SharedPreferences prefs = getSharedPreferences("isSettingsFirstOpen", MODE_PRIVATE);
-        boolean previouslyStarted = prefs.getBoolean("hasRun", false);
-
-        if (!previouslyStarted) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("hasRun", true);
-            editor.commit(); //
-
-            loadData();
-            Intent i = new Intent(SettingsActivity.this, MainActivity.class);
-            startActivity(i);
-            finish();
-        }
-
+        finish();
     }
 
     private void saveData() {
@@ -400,7 +332,7 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
             stream=openFileOutput(getAMountLocation,MODE_PRIVATE);
             writer=new OutputStreamWriter(stream);
             writer.write(amountWaterPerDay + System.lineSeparator());
-            writer.write( currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
+            writer.write(currentLocation.getLongitude() + " "+currentLocation.getLatitude()+System.lineSeparator());
             writer.close();
 
 

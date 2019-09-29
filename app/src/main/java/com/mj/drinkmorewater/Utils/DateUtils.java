@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 public class DateUtils {
 
     public static final int TWO_HOURS_IN_MILIS = 7200 * 1000;
+    public static final int TWO_SECONDS = 2000;
+
     public static final String DATE = "yyyy-MM-dd";
     public static final String DATE_AND_TIME = "yyyy-MM-dd HH:mm:ss";
 
