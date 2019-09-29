@@ -163,65 +163,25 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
 
     }
 
-
-
-
-    public void getLastLocation() {
-        // Get last known recent location using new Google Play Services SDK (v11+)
-        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
-
-        locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // GPS location can be null if GPS is switched off
-                        if (location != null) {
-                            onLocationChanged(location);
-
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
-                });
-    }
-
     public void onLocationChanged(Location location) {
-        // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
         currentLocation=location;
-
-        //locationText.setText(latLng.toString());
     }
 
 
     @Override
     public void onRequestPermissionsResult(
-            int requestCode, // koda zahtevka
-            String permissions[], // tabela zahtevanih pravic
-            int[] grantResults) // tabela odobritev
-    {
-        if (requestCode == 100) { // Če je št. zahtevka enaka 100.
+            int requestCode,
+            String permissions[],
+            int[] grantResults) {
+        if (requestCode == 100) {
             if (grantResults.length > 0) {
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Prva pravica je bila odobrena.
 
                 }
-                if(grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    //druga bila odobrena
+                if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 }
-                if(grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[2] == PackageManager.PERMISSION_GRANTED) {
 
                 }
 
@@ -268,18 +228,18 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         switch (seekBar.getId()) {
             case R.id.age_seekBar:
                 if(seekBarAge.getProgress() == 100) {
-                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + "+ y");
+                    ageText.setText(String.format("%s + y", seekBar.getProgress()));
                 }else{
-                    ageText.setText(Integer.toString((int) seekBarAge.getProgress()) + " y");
+                    ageText.setText(String.format("%s y", seekBar.getProgress()));
 
                 }
                 break;
 
             case R.id.weight_seekBar:
                 if(seekBarWeight.getProgress() == 150){
-                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + "+ kg");
+                    weightText.setText(String.format("%s +kg", seekBarWeight.getProgress()));
                 }else {
-                    weightText.setText(Integer.toString((int) seekBarWeight.getProgress()) + " kg");
+                    weightText.setText(String.format("%s kg", seekBarWeight.getProgress()));
                 }
                 break;
         }
@@ -354,9 +314,6 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
     }
 
     private void saveData() {
-
-
-
         try {
             FileOutputStream stream = openFileOutput(filename, MODE_PRIVATE);
             OutputStreamWriter writer = new OutputStreamWriter(stream);

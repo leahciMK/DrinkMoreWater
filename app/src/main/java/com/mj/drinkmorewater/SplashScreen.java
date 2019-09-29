@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.mj.drinkmorewater.Activities.MainActivity;
 import com.mj.drinkmorewater.Activities.SettingsActivity;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.api.HttpHandler;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 
@@ -32,21 +33,13 @@ import java.util.Scanner;
 
 public class SplashScreen extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 2000; // 2 sec
+    private static int SPLASH_TIME_OUT = DateUtils.TWO_SECONDS; // 2 sec
     static String cityName="";
     static String weatherInfo="";
     static double currentTemp=0;
     static String countryName="";
     public static Location location;
     final public static String getAMountLocation="amountlocation.txt";
-
-    /*
-
-
-        TODO
-        there would be async task...
-        https://www.androidhive.info/2013/07/how-to-implement-android-splash-screen-2/
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +54,7 @@ public class SplashScreen extends Activity {
 
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean("hasRun", Boolean.TRUE);
-            edit.commit();
+            edit.apply();
 
             new Handler().postDelayed(new Runnable() {
 
@@ -85,10 +78,6 @@ public class SplashScreen extends Activity {
         } else {
             new JSONParse().execute();
         }
-
-
-
-        //new JSONParse().execute();
     }
 
     public void loadData() {
@@ -221,15 +210,6 @@ public class SplashScreen extends Activity {
 
             super.onPostExecute(result);
 
-//            Intent i = new Intent(MainActivity.this, SplashScreen.class);
-//            startActivity(i);
-
-//            static String cityName="";
-//            static String weatherInfo="";
-//            static double currentTemp=0;
-//            static String countryName="";
-//            public static Location location;
-
             new Handler().postDelayed(new Runnable() {
 
             /*
@@ -252,9 +232,6 @@ public class SplashScreen extends Activity {
                     finish();
                 }
             }, SPLASH_TIME_OUT);
-
-
-
         }
     }
 }
