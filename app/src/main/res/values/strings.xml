@@ -47,5 +47,6 @@
     <string name="date">Date</string>
     <string name="Amount">Amount</string>
     <string name="Type">Type</string>
+    <string name="preference_file_key">preference</string>
 
 </resources>

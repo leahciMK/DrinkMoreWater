@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Toast;
 
@@ -57,6 +59,7 @@ public class NotificationReciever extends BroadcastReceiver {
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
+                v.vibrate(VibrationEffect.createOneShot(500,1));
 
             }
         } else {
@@ -173,22 +176,20 @@ public class NotificationReciever extends BroadcastReceiver {
 
     public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date minustwoHours=new Date(System.currentTimeMillis() - DateUtils.TWO_HOURS_IN_MILIS); //2hours
+        Date minustwoHours = new Date(System.currentTimeMillis() - DateUtils.TWO_HOURS_IN_MILIS); //2hours
 
 
         try {
-            Date lastEntry=df.parse(lastWaterEntry);
+            Date lastEntry = df.parse(lastWaterEntry);
 
-            if(lastEntry.before(minustwoHours)) {
+            if (lastEntry.before(minustwoHours)) {
                 return true;
             }
-
 
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
 
         return false;
