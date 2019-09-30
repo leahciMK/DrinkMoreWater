@@ -24,7 +24,6 @@ import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.components.DrinkType;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.DrinkEntry;
-import com.mj.drinkmorewater.db.Water;
 
 public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, Spinner.OnItemSelectedListener {
 
@@ -132,8 +131,6 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         if (getIntent().getExtras() == null) {
             int amount = seekBar.getProgress() * 50;
             if (amount != 0) {
-                //String comment = editTextComment.getText().toString();
-
                 String drink = drinksSpinner.getSelectedItem().toString();
 
                 DrinkEntry entry = null;
@@ -148,7 +145,9 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
                     databaseHandler.insertEntry(entry);
                 }
 
-                Toast toast = Toast.makeText(getApplicationContext(), entry.getDate() + " " + Integer.toString(water.getAmount()) + " " + water.getComment(), Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), String.format(
+                        "%s %s %s", entry.getDate(), entry.getAmount(), entry.getDrinkType().name()
+                ), Toast.LENGTH_SHORT);
                 toast.show();
 
                 seekBar.setProgress(5);
