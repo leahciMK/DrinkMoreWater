@@ -32,15 +32,15 @@ public class DateUtils {
         return LocalDate.now();
     }
 
-    public static String getFormattedCurrentDate(String pattern) {
-        return localDateWithFormatter(LocalDate.now(), pattern);
+    public static String getFormattedCurrentDate() {
+        return localDateWithFormatter(LocalDate.now(), DATE);
     }
 
     public static String getCurrentDateAndTime() {
         return localDateTimeToString(LocalDateTime.now());
     }
 
-    public static String getFormattedCurentDateAndTime(String pattern) {
-        return localDateTimeWithFormatter(LocalDateTime.now(), pattern);
+    public static String getFormattedCurentDateAndTime() {
+        return localDateTimeWithFormatter(LocalDateTime.now(), DATE_AND_TIME);
     }
 }

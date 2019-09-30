@@ -133,36 +133,10 @@ public class SplashScreen extends Activity {
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
-
-                            weatherInfo = "";
-
-
-                            JSONArray weather=response.getJSONArray("weather");
-
-
-                            if (weather.length() > 0) {
-                                JSONObject object=weather.getJSONObject(0);
-
-                                String main=object.getString("main");
-                                String desc=object.getString("description");
-
-
-                                weatherInfo += main+"- ";
-                                weatherInfo += desc;
-
-                            }
                             JSONObject temperatures=response.getJSONObject("main");
                             if(temperatures.length() > 0) {
                                 currentTemp = temperatures.getDouble("temp");
                             }
-
-                            JSONObject country=response.getJSONObject("sys");
-                            if(country.length() > 0) {
-                                countryName = country.getString("country");
-                            }
-
-                            cityName = response.getString("name");
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -171,7 +145,7 @@ public class SplashScreen extends Activity {
                     }
 
 
-                }catch (final JSONException e) {
+                } catch (final JSONException e) {
                     Log.e("", "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
@@ -197,10 +171,6 @@ public class SplashScreen extends Activity {
                 });
 
             }
-
-
-
-
             return null;
 
 
