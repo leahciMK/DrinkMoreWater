@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         @TODO
         rewrite Date to new java8 -> localdate etc...
         and replace variables names to appropriate one! -> old "rookie" mistakes
+        update METHODS!
      */
 
     public DatabaseHandler(Context context) {
