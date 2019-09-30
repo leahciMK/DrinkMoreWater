@@ -251,6 +251,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public Cursor getMaxGroupedSumWaterTenDays(){
         open();
+        int a = 1;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         Date daysAgo=subtractDays(date, 10);
