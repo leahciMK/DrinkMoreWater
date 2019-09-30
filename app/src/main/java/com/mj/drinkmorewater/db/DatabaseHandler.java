@@ -8,11 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mj.drinkmorewater.Utils.DateUtils;
+import com.mj.drinkmorewater.components.DrinkType;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 
 
@@ -22,8 +28,9 @@ import java.util.Random;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "Water";
-    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "DrinkEntry";
+    private static final String DATABASE_TABLE_NAME = "drinkEntry";
+    private static final int DATABASE_VERSION = 2;
     private SQLiteDatabase database;
 
     /*
@@ -38,10 +45,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createQuery = "CREATE TABLE water ("
+        /*String createQuery = "CREATE TABLE water ("
                 + "_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL,"
-                + "date TEXT NOT NULL, amount INTEGER NOT NULL, comment TEXT);";
-        db.execSQL(createQuery);
+                + "date TEXT NOT NULL, amount INTEGER NOT NULL, drinkType TEXT);";*/
+
+        String queryString = String.format("CREATE TABLE %s (_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
+                "%s TEXT NOT NULL, %s INTEGER NOT NULL, %s TEXT);", DATABASE_TABLE_NAME, DatabaseColumns.date.name(),
+                DatabaseColumns.amount.name(), DatabaseColumns.drinkType);
+        db.execSQL(queryString);
     }
 
     @Override
@@ -57,65 +68,105 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             database.close();
     }
 
-    public void insertWater(Water water) {
+    public void insertEntry(DrinkEntry entry) {
         ContentValues newEntry = new ContentValues();
-        newEntry.put("date", water.getDate());
-        newEntry.put("amount", water.getAmount());
-        newEntry.put("comment", water.getComment());
+        newEntry.put(DatabaseColumns.date.name(), entry.getDate());
+        newEntry.put(DatabaseColumns.amount.name(), entry.getAmount());
+        newEntry.put(DatabaseColumns.drinkType.name(), entry.getDrinkType().name());
 
 
         open();
-        database.insert("water", null, newEntry);
+        database.insert(DATABASE_TABLE_NAME, null, newEntry);
         close();
     }
 
-    public void updateWater(long id, String date, int amount, String comment) {
+    public void updateEntry(long id, String date, int amount, String drinkType) {
         ContentValues editWater = new ContentValues();
-        editWater.put("date", date);
-        editWater.put("amount", amount);
-        editWater.put("comment",comment);
+        editWater.put(DatabaseColumns.date.name(), date);
+        editWater.put(DatabaseColumns.amount.name(), amount);
+        editWater.put(DatabaseColumns.drinkType.name(), drinkType);
 
         open();
-        database.update("water", editWater, "_id=" + id, null);
+        database.update(DATABASE_TABLE_NAME, editWater, "_id=" + id, null);
         close();
     }
-    public Cursor getAllWatersSortedByDate() {
-        return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
-                "date desc");
+    public List<DrinkEntry> getAllDrinkEntriesSortedByDate() {
+        List<DrinkEntry> entryList = new ArrayList<>();
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", DatabaseColumns.date.name(), DatabaseColumns.amount.name(),DatabaseColumns.drinkType.name()}, null, null, null, null,
+                String.format("%s desc", DatabaseColumns.date.name()));
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            DrinkEntry entry = cursorToDrinkEntry(cursor);
+            entryList.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        close();
+        return entryList;
     }
-    public Cursor getWaterPerDay() {
-        Water a=new Water();
-        String str=a.getDateToString();
-        return database.query("water",new String[]{"amount"},"date like "+str,null,null,null,null);
+    public List<DrinkEntry> getTodayDrinkEntries() {
+        List<DrinkEntry> entryList = new ArrayList<>();
+        String todayDate = DateUtils.getFormattedCurrentDate();
+        Cursor cursor = database.query(DATABASE_TABLE_NAME,new String[]{"amount"},"date like "+todayDate,null,null,null,null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            DrinkEntry entry = cursorToDrinkEntry(cursor);
+            entryList.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        close();
+        return entryList;
     }
 
-    public Cursor getAllWater() {
-        return database.query("water", new String[]{"_id", "date", "amount","comment"}, null, null, null, null,
+    public List<DrinkEntry> getAllEntries() {
+        List<DrinkEntry> entryList = new ArrayList<>();
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", DatabaseColumns.date.name(), DatabaseColumns.amount.name(),DatabaseColumns.drinkType.name()}, null, null, null, null,
                 null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            DrinkEntry entry = cursorToDrinkEntry(cursor);
+            entryList.add(entry);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        close();
+        return entryList;
     }
 
-    public Cursor getOneWater(long id) {
-        return database.query("water", new String[]{"_id", "date", "amount","comment"}, "_id=" + id, null, null, null, null);
+    public DrinkEntry getEntry(long id) {
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", "date", "amount","comment"}, "_id=" + id, null, null, null, null);
+        cursor.close();
+        close();
+        return cursorToDrinkEntry(cursor);
     }
 
-    public void deleteWater(long id) {
+    public void deleteEntry(long id) {
         open();
-        database.delete("water", "_id=" + id, null);
+        database.delete(DATABASE_TABLE_NAME, "_id=" + id, null);
         close();
     }
 
-    public Cursor getSumWaterToday() {
+    public int getTodaySum() {
         open();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String dateToString=dateFormat.format(date);
+        String todayDate = DateUtils.getFormattedCurrentDate();
 
-        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString+"'";
+        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+todayDate+"'";
 
-        return database.rawQuery(countQuery,null);
+        Cursor cursor = database.rawQuery(countQuery,null);
+        int sum = 0;
+        while(cursor.moveToNext()) {
+            sum = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
+        }
+        cursor.close();
+        close();
+        return sum;
     }
 
-    public Cursor getSumWaterFiveDays() {
+    public int getEntriesSumForFiveDays() {
         open();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
@@ -126,7 +177,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String countQuery="SELECT date, sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"'";
 
-        return database.rawQuery(countQuery,null);
+        Cursor cursor = database.rawQuery(countQuery,null);
+        int sum = 0;
+
+        while(cursor.moveToNext()) {
+            sum = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
+        }
+        cursor.close();
+        close();
+        return sum;
     }
 
     public Cursor getSumWaterTenDays() {
@@ -192,6 +251,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     public Cursor getMaxGroupedSumWaterTenDays(){
         open();
+        int a = 1;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         Date daysAgo=subtractDays(date, 10);
@@ -211,8 +271,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return database.rawQuery(lastEntryQuery,null);
     }
 
+    protected static DrinkEntry cursorToDrinkEntry(Cursor cursor)  {
+        DrinkEntry drinkEntry = new DrinkEntry();
+
+        drinkEntry.setAmount(cursor.getInt(cursor.getColumnIndex(DatabaseColumns.amount.name())));
+        drinkEntry.setDate(cursor.getString(cursor.getColumnIndex(DatabaseColumns.date.name())));
+        drinkEntry.setDrinkType(DrinkType.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseColumns.drinkType.name()))));
+
+
+        return drinkEntry;
+    }
+
     //method for testing
-    public void insertTenDaysTestwater(){
+    /*public void insertTenDaysTestwater(){
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date datum = new Date();
         Random rnd = new Random();
@@ -225,5 +296,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d("testJulijan", datum.toString()+ "---"+ Integer.toString(st*100));
             datum = subtractDays(datum,1);
         }
-    }
+    }*/
 }

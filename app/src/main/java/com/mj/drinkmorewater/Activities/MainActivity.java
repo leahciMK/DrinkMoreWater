@@ -95,10 +95,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         loadData();
 
         Intent i = getIntent();
-        cityName = i.getStringExtra("cityName");
-        weatherInfo = i.getStringExtra("weatherInfo");
         currentTemp=i.getDoubleExtra("currentTemp",0);
-        countryName=i.getStringExtra("countryName");
 
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -113,15 +110,12 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     //Gesture Methods
     @Override
     public boolean onFling(MotionEvent motionEvent1, MotionEvent motionEvent2, float X, float Y) {
-
-
         if(motionEvent1.getX() - motionEvent2.getX() > 50){
             Intent intent=new Intent(MainActivity.this,InsertWater.class);
             startActivity(intent);
             this.gestureDetector=null;
             return true;
         }
-
         if(motionEvent2.getX() - motionEvent1.getX() > 50) {
             Intent intent=new Intent(MainActivity.this,InsertWater.class);
             startActivity(intent);
@@ -233,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         if(cursor.moveToFirst()) {
             int amount=cursor.getInt(0);
-            txtAlreadyWaterPerDay.setText(String.valueOf(amount) +" ml");
+            txtAlreadyWaterPerDay.setText(String.format("%s ml", amount));
             alreadyAmount=amount;
 
         }
@@ -250,14 +244,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Log.d("test",Integer.toString(progress));
 
         circularProgressBar.setProgressWithAnimation(progress, animationDuration); // Default duration = 1500ms
-
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
@@ -290,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
             FileInputStream stream = openFileInput(getAMountLocation);
             Scanner scanner = new Scanner(stream);
             allwater = scanner.nextLine();
-            txtAllWaterPerDay.setText(allwater + " ml");
+            txtAllWaterPerDay.setText(String.format("%s ml",allwater));
 
             String[] separete=scanner.nextLine().split(" ");
             double longitude=Double.parseDouble(separete[0]);
