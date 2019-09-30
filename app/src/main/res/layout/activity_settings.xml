@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mj.drinkmorewater.Activities.SettingsActivity"
-    tools:layout_editor_absoluteY="81dp"
-    android:background="@color/colorLightPrimary">
+    tools:layout_editor_absoluteY="81dp">
 
 <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar2"
@@ -43,7 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/gender" />
+                android:text="@string/gender"
+                android:textSize="15dp"/>
 
             <Spinner
                 android:id="@+id/gender_spinner"
@@ -70,7 +70,8 @@
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/age" />
+                android:text="@string/age"
+                android:textSize="15dp"/>
 
             <SeekBar
                 android:id="@+id/age_seekBar"
@@ -87,7 +88,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="0 y" />
+                android:text="0 y"
+                android:textSize="14dp"/>
         </LinearLayout>
         <Space
             android:layout_width="match_parent"
@@ -105,7 +107,8 @@
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/weight"/>
+                android:text="@string/weight"
+                android:textSize="15dp"/>
 
             <SeekBar
                 android:id="@+id/weight_seekBar"
@@ -123,7 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="0 kg" />
+                android:text="0 kg"
+                android:textSize="14dp"/>
 
         </LinearLayout>
 
@@ -142,14 +146,18 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/physically_active" />
+                android:text="@string/physically_active"
+                android:textSize="15dp"/>
 
             <CheckBox
                 android:id="@+id/checkBox"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@color/colorPrimary"/>
+                android:buttonTint="@color/colorPrimary"
+                android:scaleX="1.10"
+                android:scaleY="1.10"
+                android:gravity="center"/>
 
 
         </LinearLayout>
@@ -168,7 +176,8 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="@string/Daily_amount_of_water" />
+                android:text="@string/Daily_amount_of_water"
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/txtDailyAmountValue"
@@ -176,14 +185,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text=""
-                android:gravity="right"/>
+                android:gravity="right"
+                android:textSize="15dp"/>
 
 
         </LinearLayout>
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="10dp"
+            android:layout_height="30dp"
             android:layout_weight="2" />
 
         <Button
@@ -205,7 +215,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="" />
+            android:visibility="invisible"
+            android:text=""/>
 
 
 

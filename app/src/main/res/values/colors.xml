@@ -5,6 +5,6 @@
     <color name="colorAccent">#8BC34A</color>
     <color name="icons">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
-    <color name="colorLightPrimary">#BBDEFB</color>
+    <color name="colorLightPrimary">#d0e8fb</color>
     <color name="colorPrimaryText">#757575</color>
 </resources>
