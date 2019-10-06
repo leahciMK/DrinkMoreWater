@@ -74,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity implements SeekBar.OnSee
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        coreResourceBundle = CoreResourceBundle.getDefaultInstance();
+
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){

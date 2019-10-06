@@ -3,6 +3,7 @@ package com.mj.drinkmorewater.Utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DateUtils {
 
@@ -42,5 +43,9 @@ public class DateUtils {
 
     public static String getFormattedCurentDateAndTime() {
         return localDateTimeWithFormatter(LocalDateTime.now(), DATE_AND_TIME);
+    }
+
+    public static LocalDate substract(LocalDate date, long days) {
+        return date.minusDays(days);
     }
 }

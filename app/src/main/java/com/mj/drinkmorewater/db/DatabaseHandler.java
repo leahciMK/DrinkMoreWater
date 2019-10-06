@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mj.drinkmorewater.Utils.DatabaseUtils;
 import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.components.DrinkType;
 
@@ -30,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "DrinkEntry";
     private static final String DATABASE_TABLE_NAME = "drinkEntry";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
     private SQLiteDatabase database;
 
     /*
@@ -52,7 +53,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String queryString = String.format("CREATE TABLE %s (_id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL," +
                 "%s TEXT NOT NULL, %s INTEGER NOT NULL, %s TEXT);", DATABASE_TABLE_NAME, DatabaseColumns.date.name(),
-                DatabaseColumns.amount.name(), DatabaseColumns.drinkType);
+                DatabaseColumns.amount.name(), DatabaseColumns.drinkType.name());
         db.execSQL(queryString);
     }
 
@@ -92,21 +93,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         close();
     }
     public List<DrinkEntry> getAllDrinkEntriesSortedByDate() {
+        open();
         List<DrinkEntry> entryList = new ArrayList<>();
-        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", DatabaseColumns.date.name(), DatabaseColumns.amount.name(),DatabaseColumns.drinkType.name()}, null, null, null, null,
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"*"}, null, null, null, null,
                 String.format("%s desc", DatabaseColumns.date.name()));
 
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            DrinkEntry entry = cursorToDrinkEntry(cursor);
-            entryList.add(entry);
-            cursor.moveToNext();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            String date = cursor.getString(DatabaseUtils.getDateColumnIndex(cursor));
+            int amount = cursor.getInt(DatabaseUtils.getAmountColumnIndex(cursor));
+            String drinkType = cursor.getString(DatabaseUtils.getDrinkTypeColumnIndex(cursor));
+            entryList.add(new DrinkEntry(amount, DrinkType.valueOf(drinkType), date));
+
         }
         cursor.close();
         close();
         return entryList;
     }
     public List<DrinkEntry> getTodayDrinkEntries() {
+        open();
         List<DrinkEntry> entryList = new ArrayList<>();
         String todayDate = DateUtils.getFormattedCurrentDate();
         Cursor cursor = database.query(DATABASE_TABLE_NAME,new String[]{"amount"},"date like "+todayDate,null,null,null,null);
@@ -123,15 +127,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public List<DrinkEntry> getAllEntries() {
+        open();
         List<DrinkEntry> entryList = new ArrayList<>();
         Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", DatabaseColumns.date.name(), DatabaseColumns.amount.name(),DatabaseColumns.drinkType.name()}, null, null, null, null,
                 null);
 
-        cursor.moveToFirst();
+        /*cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             DrinkEntry entry = cursorToDrinkEntry(cursor);
             entryList.add(entry);
             cursor.moveToNext();
+        }*/
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            String date = cursor.getString(DatabaseUtils.getDateColumnIndex(cursor));
+            int amount = cursor.getInt(DatabaseUtils.getAmountColumnIndex(cursor));
+            String drinkType = cursor.getString(DatabaseUtils.getDrinkTypeColumnIndex(cursor));
+            entryList.add(new DrinkEntry(amount, DrinkType.valueOf(drinkType), date));
+
         }
         cursor.close();
         close();
@@ -139,9 +151,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public DrinkEntry getEntry(long id) {
-        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", "date", "amount","comment"}, "_id=" + id, null, null, null, null);
-        cursor.close();
-        close();
+        open();
+        System.out.println("Requested entry: " + id);
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", "date", "amount",DatabaseColumns.drinkType.name()}, "_id=" + id, null, null, null, null);
         return cursorToDrinkEntry(cursor);
     }
 
@@ -155,12 +167,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         open();
         String todayDate = DateUtils.getFormattedCurrentDate();
 
-        String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+todayDate+"'";
+        //String countQuery="SELECT sum(amount) as 'amount' FROM water WHERE date >= '"+todayDate+"'";
 
-        Cursor cursor = database.rawQuery(countQuery,null);
+        //Cursor cursor = database.rawQuery(countQuery,null);
+        Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"amount"}, "date >=" + todayDate, null, null, null, null);
         int sum = 0;
         while(cursor.moveToNext()) {
-            sum = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
+            sum += cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
         }
         cursor.close();
         close();
@@ -275,11 +288,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     protected static DrinkEntry cursorToDrinkEntry(Cursor cursor)  {
         DrinkEntry drinkEntry = new DrinkEntry();
 
-        drinkEntry.setAmount(cursor.getInt(cursor.getColumnIndex(DatabaseColumns.amount.name())));
-        drinkEntry.setDate(cursor.getString(cursor.getColumnIndex(DatabaseColumns.date.name())));
-        drinkEntry.setDrinkType(DrinkType.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseColumns.drinkType.name()))));
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            drinkEntry.setAmount(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name())));
+            drinkEntry.setDate(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseColumns.date.name())));
+            drinkEntry.setDrinkType(DrinkType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseColumns.drinkType.name()))));
+        }
 
 
+        //cursor.close();
         return drinkEntry;
     }
 
