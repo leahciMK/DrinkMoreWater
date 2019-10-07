@@ -42,9 +42,9 @@ public class DrinkEntryAdapter extends ArrayAdapter<DrinkEntry> {
             row = inflater.inflate(layoutResourceID, parent, false);
 
             entry = new DrinkEntryHolder();
-            entry.amount = (TextView) row.findViewById(R.id.textviewAmount);
-            entry.date = (TextView)row.findViewById(R.id.textviewDate);
-            entry.drinkType = (TextView)row.findViewById(R.id.textviewType);
+            entry.amount = (TextView) row.findViewById(R.id.amountTextView);
+            entry.date = (TextView)row.findViewById(R.id.dateTextView);
+            entry.drinkType = (TextView)row.findViewById(R.id.drinkTypeTextView);
 
             row.setTag(entry);
 
@@ -56,8 +56,7 @@ public class DrinkEntryAdapter extends ArrayAdapter<DrinkEntry> {
         }
 
         DrinkEntry item = data.get(position);
-        System.out.println("Data: " + item.toString());
-        entry.amount.setText(Integer.toString(item.getAmount()));
+        entry.amount.setText(String.format("%s",item.getAmount()));
         entry.date.setText(item.getDate());
         entry.drinkType.setText(item.getDrinkType().name());
 

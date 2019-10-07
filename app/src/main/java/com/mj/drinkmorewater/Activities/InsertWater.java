@@ -99,12 +99,7 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                idOfWater = bundle.getLong("_id");
-                DatabaseHandler databaseHandler=new DatabaseHandler(this);
-                databaseHandler.open();
-                //Cursor cursor=databaseHandler.getOneWater(idOfWater);
-                DrinkEntry entry = databaseHandler.getEntry(idOfWater);
-                System.out.println("Which entry: " + entry.toString());
+                DrinkEntry entry = (DrinkEntry) bundle.get("drinkEntry");
 
                 seekBar.setProgress(entry.getAmount() / 50);
                 drinksSpinner.setSelection(getIndex(drinksSpinner, entry.getDrinkType().toString()));

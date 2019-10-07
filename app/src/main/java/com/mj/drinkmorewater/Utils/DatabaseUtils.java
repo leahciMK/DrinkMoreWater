@@ -6,7 +6,8 @@ import com.mj.drinkmorewater.db.DatabaseColumns;
 
 public class DatabaseUtils {
 
-    public static String[] columns = new String[] {DatabaseColumns.date.name(), DatabaseColumns.amount.name(), DatabaseColumns.drinkType.name()};
+    public static String[] ALL_COLUMNS = new String[] {DatabaseColumns.date.name(), DatabaseColumns.amount.name(), DatabaseColumns.drinkType.name()};
+    public static String[] DATE_AMOUNT_COLUMNS = new String[] {DatabaseColumns.date.name(), DatabaseColumns.amount.name()};
 
     public static int getDateColumnIndex(Cursor cursor) {
         return cursor.getColumnIndex(DatabaseColumns.date.name());

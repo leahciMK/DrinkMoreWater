@@ -13,6 +13,9 @@ public class DateUtils {
     public static final String DATE = "yyyy-MM-dd";
     public static final String DATE_AND_TIME = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String HOURS_MINUTES_SECONDS_START = "00:00:00";
+    public static final String HOURS_MINUTES_SECONDS_END = "23:59:59";
+
     public static String localDateToString(LocalDate localDate) {
         return localDate.toString();
     }
@@ -33,11 +36,15 @@ public class DateUtils {
         return LocalDate.now();
     }
 
+    public static LocalDateTime getCurrentDateAndTime() {
+        return LocalDateTime.now();
+    }
+
     public static String getFormattedCurrentDate() {
         return localDateWithFormatter(LocalDate.now(), DATE);
     }
 
-    public static String getCurrentDateAndTime() {
+    public static String getCurrentDateAndTimeToString() {
         return localDateTimeToString(LocalDateTime.now());
     }
 
@@ -47,5 +54,9 @@ public class DateUtils {
 
     public static LocalDate substract(LocalDate date, long days) {
         return date.minusDays(days);
+    }
+
+    public static LocalDateTime substract(LocalDateTime dateTime, long days) {
+        return dateTime.minusDays(days);
     }
 }

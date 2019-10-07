@@ -15,12 +15,16 @@ import com.mj.drinkmorewater.components.DrinkType;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 
 
 /**
@@ -195,7 +199,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int sum = 0;
 
         while(cursor.moveToNext()) {
-            sum = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
+            sum += cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseColumns.amount.name()));
         }
         cursor.close();
         close();
@@ -236,6 +240,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String countQuery="SELECT date(date) as 'date', sum(amount) as 'amount' FROM water WHERE date >= '"+dateToString2+"'"+" and "+"date <= '"+dateToString+"' GROUP BY date(date)";
 
         return database.rawQuery(countQuery,null);
+    }
+    public Map<String, Integer> getGroupedEntriesForFiveDays() {
+        open();
+        List<DrinkEntry> entryList = new ArrayList<>();
+        Map<String, Integer> data = new TreeMap<>();
+
+        LocalDate today = DateUtils.getCurrentDate();
+        LocalDate fiveDaysAgo = DateUtils.substract(today, 5);
+
+        String query= String.format("SELECT %s(%s) as 'date', sum(%s) as 'amount' FROM %s WHERE %s >= '%s' and %s <= '%s' GROUP BY %s(%s)",
+                DatabaseColumns.date.name(), DatabaseColumns.date.name(), DatabaseColumns.amount.name(), DATABASE_TABLE_NAME, DatabaseColumns.date.name(),
+                fiveDaysAgo.toString() + "23:59:59", DatabaseColumns.date.name(), today.toString() + "00:00:00", DatabaseColumns.date.name(), DatabaseColumns.date.name());
+
+        Log.e("Query: " , query);
+        Cursor cursor = database.rawQuery(query, null);
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()){
+            String date = cursor.getString(DatabaseUtils.getDateColumnIndex(cursor));
+            int sumedAmount = cursor.getInt(DatabaseUtils.getAmountColumnIndex(cursor));
+            Log.e("Date: ", date);
+            Log.e("Sum", Integer.toString(sumedAmount));
+            data.put(date, sumedAmount);
+
+        }
+        cursor.close();
+        close();
+        Log.e("Tag", data.toString());
+        return data;
+
     }
     public Cursor getGroupedSumWaterTenDays() {
         open();

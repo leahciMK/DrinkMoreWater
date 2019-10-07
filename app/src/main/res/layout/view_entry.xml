@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="fill_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/contactLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
 
-        <TextView
-            android:id="@+id/textviewDate"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/textviewAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="40dp"
-            android:textSize="20sp" />
+    <TextView
+        android:id="@+id/amountTextView"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="40dp"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        />
 
-        <TextView
-            android:id="@+id/textViewml"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="40dp"
-            android:textSize="10sp"
-            android:text="ml" />
+    <TextView
+        android:id="@+id/amountTextViewml"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="40dp"
+        android:textSize="12sp"
+        android:text="ml"
 
-        <TextView
-            android:id="@+id/textviewType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="40dp"
-            android:textSize="20sp" />
+        />
+
+    <TextView
+        android:id="@+id/drinkTypeTextView"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="40dp"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        />
 
 
 

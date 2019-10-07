@@ -19,11 +19,14 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.mj.drinkmorewater.R;
 import com.mj.drinkmorewater.db.DatabaseHandler;
+import com.mj.drinkmorewater.db.DrinkEntry;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.mj.drinkmorewater.db.DatabaseHandler.subtractDays;
 
@@ -101,7 +104,11 @@ public class HistoryActivity extends AppCompatActivity {
         databaseHandler.open();
 
         Cursor cursor = null;
-        switch(selected) {
+        Map<String, Integer> entryList = databaseHandler.getGroupedEntriesForFiveDays();
+        for(Map.Entry entry : entryList.entrySet()) {
+            System.out.println("Ln: " + entry.getKey());
+        }
+        /*switch(selected) {
             case "5 days" :  cursor = databaseHandler.getGroupedSumWaterFiveDays();
                 break;
             case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
@@ -184,6 +191,6 @@ public class HistoryActivity extends AppCompatActivity {
         //nastavim omejitve od kje do kje je X-os (odvisno al je izbran 5 ali 10 dni)
         graph.getViewport().setMinX(minX.getTime());
         graph.getViewport().setMaxX(maxX.getTime());
-        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setXAxisBoundsManual(true);*/
     }
 }
