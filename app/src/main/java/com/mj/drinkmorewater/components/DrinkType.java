@@ -1,7 +1,7 @@
 package com.mj.drinkmorewater.components;
 
 public enum DrinkType {
-    WATER("WATER"),
+    Water("Water"),
     TEA("TEA"),
     GREEN_TEA("GREEN_TEA"),
     COFFE("COFFE"),

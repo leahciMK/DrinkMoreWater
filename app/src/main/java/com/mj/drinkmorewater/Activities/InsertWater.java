@@ -99,12 +99,13 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                idOfWater = bundle.getLong("_id");
-                DatabaseHandler databaseHandler=new DatabaseHandler(this);
-                databaseHandler.open();
-                Cursor cursor=databaseHandler.getOneWater(idOfWater);
+                DrinkEntry entry = (DrinkEntry) bundle.get("drinkEntry");
 
-                if(cursor.moveToFirst()) {
+                seekBar.setProgress(entry.getAmount() / 50);
+                drinksSpinner.setSelection(getIndex(drinksSpinner, entry.getDrinkType().toString()));
+
+
+                /*if(cursor.moveToFirst()) {
 
                     String date=cursor.getString(1);
                     int amount=cursor.getInt(2);
@@ -115,7 +116,7 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
 
 
                     drinksSpinner.setSelection(index);
-                }
+                }*/
 
 
                 if (idOfWater == 0) {
@@ -165,7 +166,11 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
             if (bundle != null) {
                 idOfWater = bundle.getLong("_id");
                 databaseHandler.open();
-                Cursor cursor = databaseHandler.getOneWater(idOfWater);
+                /*Cursor cursor = databaseHandler.getOneWater(idOfWater);
+
+                DrinkEntry entry = databaseHandler.getEntry(idOfWater);
+
+                //databaseHandler.updateEntry(idOfWater, );
 
                 if (cursor.moveToFirst()) {
                     int amount1 = seekBar.getProgress() * 50;
@@ -187,7 +192,7 @@ public class InsertWater extends AppCompatActivity implements SeekBar.OnSeekBarC
                     Intent intent1=new Intent(this,ViewMyWater.class);
                     startActivity(intent1);
 
-                }
+                }*/
 
 
                 if (idOfWater == 0) {

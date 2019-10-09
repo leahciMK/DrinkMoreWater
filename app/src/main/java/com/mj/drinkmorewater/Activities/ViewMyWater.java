@@ -5,22 +5,32 @@ import android.graphics.Color;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.adapters.DrinkEntryAdapter;
 import com.mj.drinkmorewater.db.DatabaseHandler;
+import com.mj.drinkmorewater.db.DrinkEntry;
+
+import java.util.List;
 
 public class ViewMyWater extends AppCompatActivity {
 
     ListView listViewWater;
     CursorAdapter waterAdapter;
+    ArrayAdapter arrayAdapter;
+    DatabaseHandler databaseHandler;
+
+    List<DrinkEntry> entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +40,13 @@ public class ViewMyWater extends AppCompatActivity {
         listViewWater = (ListView) findViewById(R.id.listViewWater);
         listViewWater.setOnItemClickListener(viewWaterListener);
 
-        String[] from = new String[]{"date","amount","comment"};
-        int[] to = new int[]{R.id.dateTextView,R.id.amountTextView,R.id.commentTextView};
+        databaseHandler = new DatabaseHandler(getApplicationContext());
+        entries = databaseHandler.getAllDrinkEntriesSortedByDate();
 
-        waterAdapter = new SimpleCursorAdapter(ViewMyWater.this,
-                R.layout.view_water, null, from, to, 0);
-        listViewWater.setAdapter(waterAdapter);
+        List<DrinkEntry> entries = databaseHandler.getAllDrinkEntriesSortedByDate();
+        arrayAdapter = new DrinkEntryAdapter(this, R.layout.view_entry, entries);
+
+        listViewWater.setAdapter(arrayAdapter);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar3);
 
@@ -59,16 +70,18 @@ public class ViewMyWater extends AppCompatActivity {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
-        waterAdapter.changeCursor(databaseHandler.getAllWatersSortedByDate());
+        entries = databaseHandler.getAllDrinkEntriesSortedByDate();
+        arrayAdapter = new DrinkEntryAdapter(this, R.layout.view_entry, entries);
     }
 
     AdapterView.OnItemClickListener viewWaterListener = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
             //Bundle bundle=new Bundle();
             final Intent viewContact = new Intent(ViewMyWater.this, InsertWater.class);
             //bundle.putInt("_id",arg2);
-            viewContact.putExtra("_id",arg3);
+            DrinkEntry entry = entries.get(position);
+            viewContact.putExtra("drinkEntry", entry);
             startActivity(viewContact);
             finish();
         }

@@ -24,4 +24,11 @@ public class DateUtilsTest {
         assertEquals(currentLocalDate, localDate);
     }
 
+    @Test
+    public void substractDaysTest() {
+        LocalDate today = DateUtils.getCurrentDate();
+        LocalDate todayMinusFiveDays = today.minusDays(5);
+        assertEquals(todayMinusFiveDays, DateUtils.substract(today, 5));
+    }
+
 }

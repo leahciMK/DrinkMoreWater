@@ -16,6 +16,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.Strings;
 import com.mj.drinkmorewater.Activities.InsertWater;
 import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.db.DatabaseHandler;
@@ -40,9 +41,9 @@ public class NotificationReciever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         DatabaseHandler databaseHandler = new DatabaseHandler(context.getApplicationContext());
-        Cursor cursor = databaseHandler.getLastWaterEntry();
-        if(cursor.moveToFirst()) {
-            lastWaterEntry = cursor.getString(0);
+        String lastEntryDate = databaseHandler.getLastDrinkEntryDate();
+        if(!Strings.isEmptyOrWhitespace(lastEntryDate)) {
+            lastWaterEntry = lastEntryDate;
 
             int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); //Current hour
             //return currentHour < 18 //False if after 6pm
@@ -50,9 +51,6 @@ public class NotificationReciever extends BroadcastReceiver {
             if(currentHour >= 7 && currentHour < 9) {
                 sendNotificationWakeUp(context);
             }
-
-            // display toast
-            Toast.makeText(context.getApplicationContext(), "Service is running", Toast.LENGTH_SHORT).show();
 
             if (checkLastEntryFor2Hours(lastWaterEntry) && (currentHour >= 9 && currentHour <= 23)) {
                 sendNotification(context);
@@ -174,13 +172,13 @@ public class NotificationReciever extends BroadcastReceiver {
         id++;
     }
 
-    public boolean checkLastEntryFor2Hours(String lastWaterEntry) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public boolean checkLastEntryFor2Hours(String lastDrinkEntryDate) {
+        DateFormat df = new SimpleDateFormat(DateUtils.DATE_AND_TIME);
         Date minustwoHours = new Date(System.currentTimeMillis() - DateUtils.TWO_HOURS_IN_MILIS); //2hours
 
 
         try {
-            Date lastEntry = df.parse(lastWaterEntry);
+            Date lastEntry = df.parse(lastDrinkEntryDate);
 
             if (lastEntry.before(minustwoHours)) {
                 return true;

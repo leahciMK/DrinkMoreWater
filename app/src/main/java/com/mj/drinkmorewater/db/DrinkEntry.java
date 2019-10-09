@@ -3,6 +3,7 @@ package com.mj.drinkmorewater.db;
 import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.components.DrinkType;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,18 +12,19 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by mihaa on 6. 12. 2017.
  */
 
-public class DrinkEntry {
+public class DrinkEntry implements Serializable {
     private String date;
     private int amount; //in ml
-    private DrinkType drinkType = DrinkType.WATER;
+    private DrinkType drinkType = DrinkType.Water;
 
     public DrinkEntry() {
-        this.date=null;
-        this.amount=0;
+
     }
     public DrinkEntry(int amount, DrinkType drinkType) {
         this.amount=amount;
@@ -58,5 +60,11 @@ public class DrinkEntry {
 
     public void setDrinkType(DrinkType drinkType) {
         this.drinkType = drinkType;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", this.date, this.amount, this.drinkType.name());
     }
 }

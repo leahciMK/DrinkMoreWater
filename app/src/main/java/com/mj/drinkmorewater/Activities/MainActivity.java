@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        coreResourceBundle = CoreResourceBundle.getDefaultInstance();
+
 
         txtAlreadyWaterPerDay = findViewById(R.id.txtDataWaterToday);
         txtAllWaterPerDay = findViewById(R.id.txtDataWaterTotalToday);
@@ -223,14 +225,16 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         DatabaseHandler databaseHandler = new DatabaseHandler(getApplicationContext());
         databaseHandler.open();
 
-        Cursor cursor=databaseHandler.getSumWaterToday();
+        //Cursor cursor=databaseHandler.getSumWaterToday();
 
-        if(cursor.moveToFirst()) {
+        alreadyAmount = databaseHandler.getTodaySum();
+
+        /*if(cursor.moveToFirst()) {
             int amount=cursor.getInt(0);
             txtAlreadyWaterPerDay.setText(String.format("%s ml", amount));
             alreadyAmount=amount;
 
-        }
+        }*/
 
         CircularProgressBar circularProgressBar = findViewById(R.id.CircularProgressbar);
         circularProgressBar.setColor(Color.parseColor("#1976D2"));
@@ -244,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Log.d("test",Integer.toString(progress));
 
         circularProgressBar.setProgressWithAnimation(progress, animationDuration); // Default duration = 1500ms
+        txtAlreadyWaterPerDay.setText(String.format("%s", alreadyAmount));
+
     }
 
     @Override
