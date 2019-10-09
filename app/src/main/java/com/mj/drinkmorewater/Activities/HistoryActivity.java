@@ -18,15 +18,19 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.mj.drinkmorewater.R;
+import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.db.DatabaseHandler;
 import com.mj.drinkmorewater.db.DrinkEntry;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static com.mj.drinkmorewater.db.DatabaseHandler.subtractDays;
 
@@ -60,7 +64,7 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         GraphView graph = (GraphView) findViewById(R.id.graph);
-        graph.removeAllSeries();
+        //graph.removeAllSeries();
 
         switch (item.getItemId()) {
             case R.id.itemFivedays:
@@ -104,36 +108,31 @@ public class HistoryActivity extends AppCompatActivity {
         databaseHandler.open();
 
         Cursor cursor = null;
-        Map<String, Integer> entryList = databaseHandler.getGroupedEntriesForFiveDays();
+        Map<String, Integer> entryList = new TreeMap<>();
+
+        switch (selected) {
+            case "5 days":
+                entryList = databaseHandler.getGroupedEntriesForFiveDays();
+                break;
+            case "10 days":
+                entryList = databaseHandler.getGroupedEntriesForTenDays();
+                break;
+        }
+
+        DataPoint[] dt = new DataPoint[entryList.size()];
+        int i = 0;
         for(Map.Entry entry : entryList.entrySet()) {
-            System.out.println("Ln: " + entry.getKey());
-        }
-        /*switch(selected) {
-            case "5 days" :  cursor = databaseHandler.getGroupedSumWaterFiveDays();
-                break;
-            case "10 days":  cursor = databaseHandler.getGroupedSumWaterTenDays();
-                break;
-        }
-        cursor.moveToFirst();
-
-        //date formater
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-
-        //nardimo DataPoint z točkami ki se bojo prikazovale na grafu (podatke dobimo iz baze)
-        DataPoint[] dt = new DataPoint[cursor.getCount()];
-        for (int i=0; i<cursor.getCount(); i++){
+            DateFormat format = new SimpleDateFormat(DateUtils.DATE, Locale.ENGLISH);
+            Date date = null;
             try {
-                date = format.parse(cursor.getString(0));
+                date = format.parse(entry.getKey().toString());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            Log.d("test", Integer.toString(i) + Integer.toString(cursor.getInt(1)) + " "+ cursor.getString(0));
-            dt[i] = new DataPoint(date, cursor.getInt(1));
-            cursor.moveToNext();
+            dt[i] = new DataPoint(date, (double) (int) entry.getValue());
+            i++;
         }
 
-        //Graph design
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dt);
         series.setDrawBackground(true);
         series.setBackgroundColor(Color.argb(80, 25, 118, 210));
@@ -144,15 +143,15 @@ public class HistoryActivity extends AppCompatActivity {
         GraphView graph = (GraphView) findViewById(R.id.graph);
         graph.addSeries(series);    //dodamo točke na graf
         //for geting max amount of water
+        int maxAmount = 0;
         switch(selected) {
-            case "5 days" :  cursor = databaseHandler.getMaxGroupedSumWaterFiveDays();
+            case "5 days" :  maxAmount = databaseHandler.getMaxGroupedSumWaterFiveDays();
                 break;
-            case "10 days":  cursor = databaseHandler.getMaxGroupedSumWaterTenDays();
+            case "10 days":  maxAmount = databaseHandler.getMaxGroupedSumWaterTenDays();
                 break;
         }
-        cursor.moveToFirst();
-        int max = cursor.getInt(0); //vemo koliko je maximalna količina vode in lahko nastavimo višino y-osi
-        graph.getViewport().setMaxY(max+1000);
+
+        graph.getViewport().setMaxY(maxAmount+500);
         graph.getViewport().setMinY(0);
         graph.getViewport().setYAxisBoundsManual(true);
         //formatiramo oznake na y in x oseh
@@ -160,10 +159,7 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
-                    String myDateStr = new SimpleDateFormat("dd").format(new Date((new Double(value)).longValue()));
-                    if(myDateStr.substring(0,1).equals("0")){
-                        myDateStr=myDateStr.substring(1);
-                    }
+                    String myDateStr = new SimpleDateFormat("d.MM").format(new Date((new Double(value)).longValue()));
                     return myDateStr;
                 } else {
                     // show ml on y values
@@ -182,15 +178,14 @@ public class HistoryActivity extends AppCompatActivity {
         minX.setHours(0);
         minX.setMinutes(0);
         switch(selected) {
-            case "5 days" :  minX=subtractDays(maxX, 4);
-
+            case "5 days" :  minX=subtractDays(maxX, 5);
                 break;
-            case "10 days":  minX=subtractDays(maxX, 9);
+            case "10 days":  minX=subtractDays(maxX, 10);
                 break;
         }
         //nastavim omejitve od kje do kje je X-os (odvisno al je izbran 5 ali 10 dni)
         graph.getViewport().setMinX(minX.getTime());
         graph.getViewport().setMaxX(maxX.getTime());
-        graph.getViewport().setXAxisBoundsManual(true);*/
+        graph.getViewport().setXAxisBoundsManual(true);
     }
 }
