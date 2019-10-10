@@ -150,7 +150,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public DrinkEntry getEntry(long id) {
         open();
-        System.out.println("Requested entry: " + id);
         Cursor cursor = database.query(DATABASE_TABLE_NAME, new String[]{"_id", "date", "amount",DatabaseColumns.drinkType.name()}, "_id=" + id, null, null, null, null);
         return cursorToDrinkEntry(cursor);
     }
@@ -244,7 +243,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Map<String, Integer> data = new TreeMap<>();
 
         LocalDate today = DateUtils.getCurrentDate();
-        LocalDate fiveDaysAgo = DateUtils.substract(today, 5);
+        LocalDate fiveDaysAgo = DateUtils.substractDays(today, 5);
 
         String query= String.format("SELECT %s(%s) as 'date', sum(%s) as 'amount' FROM %s WHERE %s >= '%s' and %s <= '%s' GROUP BY %s(%s)",
                 DatabaseColumns.date.name(), DatabaseColumns.date.name(), DatabaseColumns.amount.name(), DATABASE_TABLE_NAME, DatabaseColumns.date.name(),
@@ -268,7 +267,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Map<String, Integer> data = new TreeMap<>();
 
         LocalDate today = DateUtils.getCurrentDate();
-        LocalDate fiveDaysAgo = DateUtils.substract(today, 10);
+        LocalDate fiveDaysAgo = DateUtils.substractDays(today, 10);
 
         String query= String.format("SELECT %s(%s) as 'date', sum(%s) as 'amount' FROM %s WHERE %s >= '%s' and %s <= '%s' GROUP BY %s(%s)",
                 DatabaseColumns.date.name(), DatabaseColumns.date.name(), DatabaseColumns.amount.name(), DATABASE_TABLE_NAME, DatabaseColumns.date.name(),
@@ -305,7 +304,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int sum = 0;
 
         LocalDate today = DateUtils.getCurrentDate();
-        LocalDate fiveDaysAgo = DateUtils.substract(today, 5);
+        LocalDate fiveDaysAgo = DateUtils.substractDays(today, 5);
 
         String query= String.format("SELECT max(%s) as 'amount' FROM (SELECT sum(amount) 'amount' FROM %s where date(date) BETWEEN date('%s') and date('%s') GROUP BY date(date) ORDER BY date(date) DESC)",
                 DatabaseColumns.amount.name(), DATABASE_TABLE_NAME, fiveDaysAgo.toString() + " " + DateUtils.HOURS_MINUTES_SECONDS_START, today + " " + DateUtils.HOURS_MINUTES_SECONDS_END
@@ -326,7 +325,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int sum = 0;
 
         LocalDate today = DateUtils.getCurrentDate();
-        LocalDate tenDaysAgo = DateUtils.substract(today, 10);
+        LocalDate tenDaysAgo = DateUtils.substractDays(today, 10);
 
         String query= String.format("SELECT max(%s) as 'amount' FROM (SELECT sum(amount) 'amount' FROM %s where date(date) BETWEEN date('%s') and date('%s') GROUP BY date(date) ORDER BY date(date) DESC)",
                 DatabaseColumns.amount.name(), DATABASE_TABLE_NAME, tenDaysAgo.toString() + " " + DateUtils.HOURS_MINUTES_SECONDS_START, today + " " + DateUtils.HOURS_MINUTES_SECONDS_END

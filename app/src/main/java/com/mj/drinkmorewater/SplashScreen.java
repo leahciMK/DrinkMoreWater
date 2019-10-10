@@ -1,7 +1,6 @@
 package com.mj.drinkmorewater;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -9,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,9 +15,7 @@ import com.mj.drinkmorewater.Activities.MainActivity;
 import com.mj.drinkmorewater.Activities.SettingsActivity;
 import com.mj.drinkmorewater.Utils.DateUtils;
 import com.mj.drinkmorewater.api.HttpHandler;
-import com.mj.drinkmorewater.db.DatabaseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

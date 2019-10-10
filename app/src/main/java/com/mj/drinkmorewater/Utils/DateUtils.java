@@ -52,11 +52,15 @@ public class DateUtils {
         return localDateTimeWithFormatter(LocalDateTime.now(), DATE_AND_TIME);
     }
 
-    public static LocalDate substract(LocalDate date, long days) {
+    public static LocalDate substractDays(LocalDate date, long days) {
         return date.minusDays(days);
     }
 
-    public static LocalDateTime substract(LocalDateTime dateTime, long days) {
+    public static LocalDateTime substractDays(LocalDateTime dateTime, long days) {
         return dateTime.minusDays(days);
+    }
+
+    public static LocalDateTime substractHours(LocalDateTime dateTime, long hours) {
+        return dateTime.minusHours(hours);
     }
 }

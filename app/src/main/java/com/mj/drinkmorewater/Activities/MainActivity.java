@@ -76,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        NotificationReciever.createNotificationChannel(getApplicationContext());
+
         coreResourceBundle = CoreResourceBundle.getDefaultInstance();
 
 
